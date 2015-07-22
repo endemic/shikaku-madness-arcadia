@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <!-- Set viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- Launch in "fullscreen" mode if from home screen -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Does Apple support the above? -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- controls the appearance of the status bar in full-screen mode -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <style type="text/css">
+        body { margin: 0; padding: 0; background: #000; }
+        #arcadia canvas {
+            background-image: url('assets/images/background.png');
+            background-size: cover;
+            cursor: url('assets/images/cursor.cur'), default;
+        }
+        #arcadia, #arcadia canvas {
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+        }
+        
+        /*#test { font: 16px 'uni_05_53'; }
+        @font-face {
+            font-family: 'uni_05_53';
+            src: url('assets/fonts/uni0553-webfont-webfont.eot');
+            src: url('assets/fonts/uni0553-webfont-webfont.eot?#iefix') format('embedded-opentype'),
+                 url('assets/fonts/uni0553-webfont-webfont.woff') format('woff'),
+                 url('assets/fonts/uni0553-webfont-webfont.ttf') format('truetype'),
+                 url('assets/fonts/uni0553-webfont-webfont.svg#uni_05_53regular') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }*/
+    </style>
+
+    <!-- engine -->
+    <script src="node_modules/arcadia/dist/arcadia.js"></script>
+
+    <!-- polyfills, etc. -->
+    <script src="src/lib/storage-extensions.js"></script>
+
+    <!-- puzzle data -->
+    <script src="src/data/levels.js"></script>
+
+    <!-- objects -->
+    <script src="src/objects/grid.js"></script>
+    <script src="src/objects/preview.js"></script>
+
+    <!-- scenes -->
+    <script src="src/scenes/title.js"></script>
+    <script src="src/scenes/level-select.js"></script>
+    <script src="src/scenes/game.js"></script>
+
+    <script>
+        window.onload = function () {
+            new Arcadia.Game({
+                width: 667,
+                height: 375,
+                scene: TitleScene,
+                scaleToFit: true
+            });
+        };
+    </script>
+
+  </head>
+  <body>
+    <div id="test" style="position: absolute; left: -9999px;">need to use a custom font elsewhere first</div>
+  </body>
+</html>
