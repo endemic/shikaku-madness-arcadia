@@ -1,13 +1,18 @@
 var GameScene = function (options) {
     Arcadia.Scene.apply(this, arguments);
 
+    if (options === undefined) {
+        options = {};
+    }
+
     this.difficulty = options.difficulty || 'beginner';
     this.level = options.level || 0;
+    this.color = '#ccc';
 
-    this.clues = LEVELS[this.difficulty][this.level].clues;
+    this.levelData = LEVELS[this.difficulty][this.level];
 
     this.timer = 0;
-
+    this.timerLabel = new Arcadia.Label({});
 
     this.initUi();
 };
@@ -41,5 +46,12 @@ GameScene.prototype.onPointEnd = function (points) {
 };
 
 GameScene.prototype.initUi = function () {
-    // Create buttons, etc. here
+    this.grid = new Grid({
+        levelData: this.levelData,
+        position: {
+            x: Arcadia.WIDTH / 2,
+            y: Arcadia.HEIGHT / 2
+        }
+    });
+    this.add(this.grid);
 };
