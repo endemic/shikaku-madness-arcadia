@@ -3,8 +3,8 @@ var Grid = function (options) {
     Arcadia.Shape.apply(this, arguments);
 
     this.size = {
-        width: 375,
-        height: 375
+        width: Grid.SIZE,
+        height: Grid.SIZE
     };
 
     this.levelData = options.levelData;
@@ -21,7 +21,7 @@ var Grid = function (options) {
     bottom = this.size.height / 2;
 
     // Get bounds of user interactive area
-    this.gridBounds = {
+    this.bounds = {
         right: right + this.position.x,
         left: (right - (this.cellSize * this.gridSize)) + this.position.x,
         bottom: bottom + this.position.y,
@@ -66,6 +66,7 @@ var Grid = function (options) {
 
 Grid.prototype = new Arcadia.Shape();
 
+Grid.SIZE = 375;
 
 Grid.prototype.drawClues = function () {
     var self = this;
@@ -88,10 +89,10 @@ Grid.prototype.drawClues = function () {
 };
 
 Grid.prototype.containsPoint = function (point) {
-    return point.x < this.gridBounds.right &&
-      point.x > this.gridBounds.left &&
-      point.y < this.gridBounds.bottom &&
-      point.y > this.gridBounds.top;
+    return point.x < this.bounds.right &&
+      point.x > this.bounds.left &&
+      point.y < this.bounds.bottom &&
+      point.y > this.bounds.top;
 };
 
 Grid.prototype.getRowAndColumn = function (point) {
@@ -101,8 +102,8 @@ Grid.prototype.getRowAndColumn = function (point) {
 
     var row, column;
 
-    row = Math.floor((point.y - this.gridBounds.top) / this.cellSize);
-    column = Math.floor((point.x - this.gridBounds.left) / this.cellSize);
+    row = Math.floor((point.y - this.bounds.top) / this.cellSize);
+    column = Math.floor((point.x - this.bounds.left) / this.cellSize);
 
     return [row, column];
 };
