@@ -67,10 +67,10 @@ GameScene.prototype.onPointStart = function (points) {
         return;
     }
 
+    this.startPoint = points[0];
     this.startRow = this.previousRow = row;
     this.startColumn = this.previousColumn = column;
 
-    this.activeSquare.alpha = 1;
     this.activeSquare.position = {
         x: this.grid.bounds.left + column * this.grid.cellSize + this.grid.cellSize / 2,
         y: this.grid.bounds.top + row * this.grid.cellSize + this.grid.cellSize / 2
@@ -80,14 +80,13 @@ GameScene.prototype.onPointStart = function (points) {
         height: this.grid.cellSize
     };
 
-    // TODO: Determine if the square collides with another;
-    // if so, delete the other one
+    // Determine if the square collides with another;
+    // if so, delete the old one
     this.squares.forEach(function (square, index) {
         if (self.activeSquare.collidesWith(square)) {
             self.remove(square);
             self.squares.splice(index, 1);
-
-            // TODO: play "remove" sfx
+            sona.play('erase');
         }
     });
 };
@@ -111,14 +110,13 @@ GameScene.prototype.onPointMove = function (points) {
         return;
     }
 
-    /*
-    # This allows a single click/tap to remove rects
-    # User has to move input at least 5px to start drawing a new one
-    if Input.distance(position, @startPosition) > 5 and @rectangle.css('display') is 'none'
-        @rectangle.show()
-        @$('.area').html "Area:<br>1"
-        @trigger 'sfx:play', 'move'
-    */
+    // This allows a single click/tap to remove squares
+    // Player has to move input at least 5px to start drawing a new one
+    if (Arcadia.distance(points[0], this.startPoint) > 5 && this.activeSquare.alpha === 0) {
+        this.activeSquare.alpha = 1;
+        this.areaLabel.text = 'Area:\n1';
+        sona.play('move');
+    }
 
     width = Math.abs(this.startColumn - column) + 1;
     height = Math.abs(this.startRow - row) + 1;
@@ -162,8 +160,8 @@ GameScene.prototype.onPointMove = function (points) {
     }
 
     if (row !== this.previousRow || column !== this.previousColumn) {
-        // sona.play('move')
-        // this.areaLabel.text = 'Area:\n' + (width * height);
+        sona.play('move')
+        this.areaLabel.text = 'Area:\n' + (width * height);
     }
 
     this.previousRow = row;
@@ -214,6 +212,7 @@ GameScene.prototype.onPointEnd = function (points) {
     // Clear out previous data
     this.startRow = this.previousRow = null;
     this.startColumn = this.previousColumn = null;
+    this.areaLabel.text = 'Area:\n--'
 };
 
 GameScene.prototype.check = function () {
@@ -222,8 +221,19 @@ GameScene.prototype.check = function () {
 
 GameScene.prototype.win = function () {
     alert('u solved the puzzle, bro');
+    sona.play('win');
 };
 
 GameScene.prototype.initUi = function () {
     // TODO: Create UI (timer, etc.) components here
+    this.areaLabel = new Arcadia.Label({
+        color: 'black',
+        text: 'Area:\n--',
+        font: '20px sans-serif',
+        position: {
+            x: 100,
+            y: 20
+        }
+    });
+    this.add(this.areaLabel);
 };

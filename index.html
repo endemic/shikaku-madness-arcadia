@@ -38,6 +38,7 @@
 
     <!-- engine -->
     <script src="node_modules/arcadia/dist/arcadia.js"></script>
+    <script src="node_modules/sona/dist/sona.js"></script>
 
     <!-- polyfills, etc. -->
     <script src="src/lib/storage-extensions.js"></script>
@@ -57,11 +58,20 @@
 
     <script>
         window.onload = function () {
-            new Arcadia.Game({
-                width: 667,
-                height: 375,
-                scene: GameScene,
-                scaleToFit: true
+            window.sona = new Sona([
+                { url: 'assets/sounds/button.mp3', id: 'button' },
+                { url: 'assets/sounds/erase.mp3', id: 'erase' },
+                { url: 'assets/sounds/move.mp3', id: 'move' },
+                { url: 'assets/sounds/win.mp3', id: 'win' }
+            ]);
+
+            window.sona.load(function () {
+                new Arcadia.Game({
+                    width: 667,
+                    height: 375,
+                    scene: GameScene,
+                    scaleToFit: true
+                });
             });
         };
     </script>
