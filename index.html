@@ -13,16 +13,18 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
     <style type="text/css">
-        body { margin: 0; padding: 0; background: #000; }
-        #arcadia canvas {
+        body {
+            margin: 0;
+            padding: 0;
             background-image: url('assets/images/background.png');
-            background-size: cover;
-            cursor: url('assets/images/cursor.cur'), default;
+            background-size: contain;
+            background-repeat: repeat-x;
+            /*cursor: url('assets/images/cursor.cur'), default;*/
         }
         #arcadia, #arcadia canvas {
             -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
         }
-        
+
         /*#test { font: 16px 'uni_05_53'; }
         @font-face {
             font-family: 'uni_05_53';
@@ -50,6 +52,7 @@
     <script src="src/objects/grid.js"></script>
     <script src="src/objects/preview.js"></script>
     <script src="src/objects/clue.js"></script>
+    <script src="src/objects/square.js"></script>
 
     <!-- scenes -->
     <script src="src/scenes/title.js"></script>
