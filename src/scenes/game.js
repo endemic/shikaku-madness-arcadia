@@ -5,7 +5,7 @@ var GameScene = function (options) {
         options = {};
     }
 
-    this.color = '#ccc';
+    //this.color = '#ccc';
     this.difficulty = options.difficulty || 'beginner';
     this.level = options.level || 0;
     this.ignoreInput = false;
@@ -25,9 +25,7 @@ var GameScene = function (options) {
     this.add(this.grid);
 
     this.squares = [];
-    this.activeSquare = new Arcadia.Shape({
-        color: 'rgba(255, 0, 0, 0.5)',
-        border: '2px darkred',
+    this.activeSquare = new Square({
         alpha: 0
     });
     this.add(this.activeSquare);
@@ -160,7 +158,8 @@ GameScene.prototype.onPointMove = function (points) {
     }
 
     if (row !== this.previousRow || column !== this.previousColumn) {
-        sona.play('move')
+        sona.play('move');
+        console.log('trying to play sound');
         this.areaLabel.text = 'Area:\n' + (width * height);
     }
 
@@ -177,9 +176,7 @@ GameScene.prototype.onPointEnd = function (points) {
         area = width * height;
 
         // Dupe the activeSquare
-        dupe = new Arcadia.Shape({
-            color: 'rgba(255, 0, 0, 0.5)',
-            border: '2px darkred',
+        dupe = new Square({
             position: {
                 x: this.activeSquare.position.x,
                 y: this.activeSquare.position.y
@@ -187,8 +184,10 @@ GameScene.prototype.onPointEnd = function (points) {
             size: {
                 width: this.activeSquare.size.width,
                 height: this.activeSquare.size.height
-            }
+            },
+            area: area  // non-standard prop
         });
+
         this.add(dupe);
         this.squares.push(dupe);
 
@@ -197,8 +196,6 @@ GameScene.prototype.onPointEnd = function (points) {
         // If square overlaps a single clue, check if the area matches the clue
 
         // If area matches the single clue, give the square a different color
-
-        // square.area = area
 
         // Reset the activeSquare
         this.activeSquare.alpha = 0;
@@ -216,7 +213,39 @@ GameScene.prototype.onPointEnd = function (points) {
 };
 
 GameScene.prototype.check = function () {
-    return false;
+    var square, clue, self;
+
+    self = this;
+
+    if (this.squares.length != this.levelData.clues.length) {
+        console.log('Square count doesn\'t match clue count');
+        return false;
+    }
+
+    var success = true;
+
+    this.squares.forEach(function (square) {
+        var collisionCount = 0;
+        var validClue = null;
+
+        self.grid.clues.forEach(function (clue) {
+            // TODO: collisions not registering properly
+            if (clue.collidesWith(square)) {
+                validClue = clue;
+                collisionCount += 1;
+            } 
+        });
+
+        if (collisionCount > 1 || collisionCount === 0) {
+            console.log("Failing because a clue has either no squares covering it, or multiple squares covering it");
+            success = false;
+        } else if (validClue.number !== square.area) {
+            console.log("Clue and rect area don't match!");
+            success = false;
+        }
+    });
+
+    return success;
 };
 
 GameScene.prototype.win = function () {

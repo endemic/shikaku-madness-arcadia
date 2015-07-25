@@ -10,7 +10,9 @@ var Grid = function (options) {
     this.levelData = options.levelData;
     this.gridSize = this.levelData.size;
     this.cellSize = this.size.width / this.gridSize;
+    this.clues = [];
 
+    // TODO: draw this in path()
     this.shadow = '5px 5px 0 rgba(0, 0, 0, 0.5)';
 
     var left, right, top, bottom;
@@ -85,6 +87,7 @@ Grid.prototype.drawClues = function () {
             }
         });
         self.add(clueLabel);
+        self.clues.push(clueLabel);
     });
 };
 
