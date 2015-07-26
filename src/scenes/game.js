@@ -1,36 +1,37 @@
 var GameScene = function (options) {
     Arcadia.Scene.apply(this, arguments);
 
-    if (options === undefined) {
-        options = {};
-    }
+    options = options || {};
 
     //this.color = '#ccc';
     this.difficulty = options.difficulty || 'beginner';
     this.level = options.level || 0;
-    this.ignoreInput = false;
-
     this.levelData = LEVELS[this.difficulty][this.level];
-
+    this.ignoreInput = false;
     this.timer = 0;
-    this.timerLabel = new Arcadia.Label();
 
+    // Puzzle grid
     this.grid = new Grid({
-        levelData: this.levelData,
+        size: this.levelData.size,
         position: {
-            x: Arcadia.WIDTH - (Grid.SIZE / 2),
-            y: Arcadia.HEIGHT / 2
+            x: Arcadia.WIDTH / 2,
+            y: Arcadia.HEIGHT - (Grid.SIZE / 2)
         }
     });
     this.add(this.grid);
 
+    // Clues
+    this.clues = []
+    this.drawClues();
+
+    // Squares
     this.squares = [];
     this.activeSquare = new Square({
         alpha: 0
     });
     this.add(this.activeSquare);
 
-    this.initUi();
+    this.drawUi();
 };
 
 GameScene.prototype = new Arcadia.Scene();
@@ -217,7 +218,7 @@ GameScene.prototype.check = function () {
 
     self = this;
 
-    if (this.squares.length != this.levelData.clues.length) {
+    if (this.squares.length != this.clues.length) {
         console.log('Square count doesn\'t match clue count');
         return false;
     }
@@ -228,8 +229,7 @@ GameScene.prototype.check = function () {
         var collisionCount = 0;
         var validClue = null;
 
-        self.grid.clues.forEach(function (clue) {
-            // TODO: collisions not registering properly
+        self.clues.forEach(function (clue) {
             if (clue.collidesWith(square)) {
                 validClue = clue;
                 collisionCount += 1;
@@ -251,18 +251,130 @@ GameScene.prototype.check = function () {
 GameScene.prototype.win = function () {
     alert('u solved the puzzle, bro');
     sona.play('win');
+    Arcadia.changeScene(LevelSelectScene);
 };
 
-GameScene.prototype.initUi = function () {
-    // TODO: Create UI (timer, etc.) components here
+GameScene.prototype.drawClues = function () {
+    var self = this;
+
+    this.levelData.clues.forEach(function (clue) {
+        var clueLabel,
+            x = clue[0],
+            y = clue[1],
+            value = clue[2];
+        
+        clueLabel = new Clue({
+            number: value,
+            position: {
+                x: self.grid.bounds.left + (x * self.grid.cellSize) + Clue.SIZE / 2 + 2, // TODO: get rid of these magic numbers
+                y: self.grid.bounds.top + (y * self.grid.cellSize) + Clue.SIZE / 2 + 2
+            }
+        });
+        self.add(clueLabel);
+        self.clues.push(clueLabel);
+    });
+};
+
+GameScene.prototype.drawUi = function () {
+    
+    var areaLabelBackground,
+        timerLabelBackground,
+        quitButton,
+        resetButton,
+        self = this;
+
+    quitButton = new Arcadia.Button({
+        color: 'white',
+        border: '2px black',
+        label: new Arcadia.Label({
+            color: 'black',
+            text: 'quit',
+            font: '20px sans-serif',   // TODO button throws exception w/o a font arg
+        }),
+        size: {
+            width: 175,
+            height: 50
+        },
+        position: {
+            x: 100,
+            y: 40
+        },
+        action: function () {
+            sona.play('button');
+            Arcadia.changeScene(LevelSelectScene);
+        }
+    });
+    this.add(quitButton);
+
+    resetButton = new Arcadia.Button({
+        color: 'white',
+        border: '2px black',
+        label: new Arcadia.Label({
+            color: 'black',
+            text: 'reset',
+            font: '20px sans-serif',
+        }),
+        size: {
+            width: 175,
+            height: 50
+        },
+        position: {
+            x: Arcadia.WIDTH - 100,
+            y: 40
+        },
+        action: function () {
+            sona.play('button');
+            // TODO: maybe have a confirm dialog here
+            self.squares.forEach(function (square) {
+                self.remove(square);
+            });
+            self.squares = [];
+        }
+    });
+    this.add(resetButton);
+
+    areaLabelBackground = new Arcadia.Shape({
+        color: 'white',
+        border: '2px black',
+        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        size: {
+            width: 100,
+            height: 100
+        },
+        position: {
+            x: 50,
+            y: 150
+        }
+    });
+
+    this.add(areaLabelBackground);
+
     this.areaLabel = new Arcadia.Label({
         color: 'black',
         text: 'Area:\n--',
-        font: '20px sans-serif',
+        font: '20px sans-serif'
+    });
+    areaLabelBackground.add(this.areaLabel);
+
+    timerLabelBackground = new Arcadia.Shape({
+        color: 'white',
+        border: '2px black',
+        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        size: {
+            width: 100,
+            height: 100
+        },
         position: {
-            x: 100,
-            y: 20
+            x: 250,
+            y: 150
         }
     });
-    this.add(this.areaLabel);
+    this.add(timerLabelBackground);
+
+    this.timerLabel = new Arcadia.Label({
+        color: 'black',
+        text: '00:00',
+        font: '20px sans-serif'
+    });
+    timerLabelBackground.add(this.timerLabel);
 };
