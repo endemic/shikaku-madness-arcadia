@@ -6,7 +6,8 @@ var Thumbnail = function () {
         height: Thumbnail.SIZE
     };
 
-    this.shadow = '5px 5px 0 rgba(0, 0, 0, 0.5)';
+    this.shadow = '1px 0 5px black';
+    this.border = '1px black';
 
     this.pixels = new Arcadia.Pool();
     this.pixels.factory = function () {
@@ -34,15 +35,16 @@ Thumbnail.prototype.drawPreview = function (levelIndex) {
 
     var self,
         clues,
-        gridSize,
+        puzzleSize,
         previewSize,
         pixelSize;
 
     self = this;
     clues = LEVELS[levelIndex].clues;
-    gridSize = LEVELS[levelIndex].size;
-    previewSize = Math.floor(this.size.width / gridSize) * gridSize;
-    pixelSize = Math.floor(previewSize / gridSize);
+    puzzleSize = LEVELS[levelIndex].size;
+    // previewSize = Math.floor(this.size.width / puzzleSize) * puzzleSize;
+    previewSize = Thumbnail.SIZE;
+    pixelSize = previewSize / puzzleSize;
 
     clues.forEach(function (clue) {
         var x = clue[0],
@@ -50,8 +52,8 @@ Thumbnail.prototype.drawPreview = function (levelIndex) {
             pixel = self.pixels.activate();
 
         pixel.size = {
-            width: pixelSize,
-            height: pixelSize
+            width: Math.round(pixelSize),
+            height: Math.round(pixelSize)
         };
         pixel.position = {
             x: -self.size.width / 2 + x * pixelSize + pixelSize / 2,

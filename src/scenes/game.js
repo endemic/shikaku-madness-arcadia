@@ -6,7 +6,7 @@ var GameScene = function (options) {
     //this.color = '#ccc';
     this.difficulty = options.difficulty || 'beginner';
     this.level = options.level || 0;
-    this.levelData = LEVELS[this.difficulty][this.level];
+    this.levelData = LEVELS[this.level];
     this.ignoreInput = false;
     this.timer = 0;
 
@@ -39,7 +39,7 @@ GameScene.prototype = new Arcadia.Scene();
 GameScene.prototype.update = function (delta) {
     Arcadia.Scene.prototype.update.call(this, delta);
 
-    this.timer -= delta;
+    this.timer += delta;
 
     var minutes,
         seconds;

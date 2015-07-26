@@ -3,10 +3,72 @@ var LevelSelectScene = function (options) {
     
     options = options || {};
 
-    var title, button, _this = this;
+    var title, button, self = this;
+    // this.color = 'lightgrey';
+    this.selectedLevel = 0;
 
-    this.difficulty = options.difficulty || 'beginner';
-    this.level = 0;
+    this.currentPage = parseInt(localStorage.getItem('currentPage'), 10) || 0;
+    this.perPage = 9;
+    this.totalPages = Math.ceil(LEVELS.length / this.perPage);
+
+    this.pageLabel = new Arcadia.Label({
+        position: {
+            x: Arcadia.WIDTH / 2,
+            y: Arcadia.HEIGHT - 100
+        }
+    });
+    this.updatePageLabel();
+    this.add(this.pageLabel);
+
+    // Create two "pages" of thumbnail previews
+    this.thumbnails = [[], []];
+
+    // Store the default coords of each thumbnail (used for resetting after animations, etc.)
+    this.thumbnailPositions = [];
+
+    this.thumbnails.forEach(function (page) {
+        var thumbnail,
+            index,
+            previewSize = 75,
+            previewPadding = 10;
+
+        while (page.length < self.perPage) {
+            index = page.length;
+
+            self.thumbnailPositions[index] = {
+                x: Arcadia.WIDTH / 2 - (previewSize + previewPadding) + (index % 3) * (previewSize + previewPadding),
+                y: Arcadia.HEIGHT / 2 - (previewSize + previewPadding) + Math.floor(index / 3) * (previewSize + previewPadding)
+            };
+
+            thumbnail = new Thumbnail({
+                size: {
+                    width: previewSize,
+                    height: previewSize
+                },
+                position: {
+                    x: self.thumbnailPositions[index].x,
+                    y: self.thumbnailPositions[index].y
+                },
+                shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)'
+            });
+
+            thumbnail.drawPreview(self.currentPage * self.perPage + index);
+
+            self.add(thumbnail);
+            page.push(thumbnail);
+            // console.log('Thumbnail placed at', thumbnail.position.x, thumbnail.position.y);
+        }    
+    });
+
+    // Move second page offscreen
+    this.thumbnails[1].forEach(function (thumbnail) {
+        thumbnail.position = {
+            x: thumbnail.position.x + Arcadia.WIDTH,
+            y: thumbnail.position.y
+        }
+    });
+
+    this.activeThumbnailPage = 0;
 
     var backButton = new Arcadia.Button({
         position: { x: 75, y: 35 },
@@ -20,7 +82,7 @@ var LevelSelectScene = function (options) {
             position: { x: 0, y: -3 }
         }),
         action: function () {
-            Arcadia.playSfx('button');
+            sona.play('button');
             Arcadia.changeScene(DifficultySelect);
         }
     });
@@ -50,78 +112,193 @@ var LevelSelectScene = function (options) {
             position: { x: 0, y: -3 }
         }),
         action: function () {
-            Arcadia.playSfx('button');
-            Arcadia.changeScene(Game, {
-                difficulty: _this.difficulty,
-                level: _this.level
-            });
+            sona.play('button');
+            Arcadia.changeScene(GameScene, { level: self.selectedLevel });
         }
     });
     this.add(startButton);
 
     // Create previous/next buttons
-    var previousButton = new Arcadia.Button({
+    this.previousButton = new Arcadia.Button({
         position: { x: 50, y: 350 },
         size: { width: 60, height: 60 },
-        border: '5px solid #000',
-        color: '#665945',
-        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        border: '1px solid black',
+        color: 'white',
+        shadow: '1px 0 5px black',
+        vertices: 0,
         label: new Arcadia.Label({
             text: '<',
             font: '40px uni_05_53',
+            color: 'black',
             position: { x: 0, y: -3 }
         }),
         action: function () {
-            Arcadia.playSfx('button');
-            _this.previous();
+            self.previous();
         }
     });
 
-    var nextButton = new Arcadia.Button({
+    this.nextButton = new Arcadia.Button({
         position: { x: Arcadia.WIDTH - 50, y: 350 },
         size: { width: 60, height: 60 },
-        border: '5px solid #000',
-        color: '#665945',
-        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        border: '1px solid black',
+        color: 'white',
+        shadow: '1px 0 5px black',
+        vertices: 0,
         label: new Arcadia.Label({
             text: '>',
             font: '40px uni_05_53',
+            color: 'black',
             position: { x: 0, y: -3 }
         }),
         action: function () {
-            Arcadia.playSfx('button');
-            _this.next();
+            self.next();
         }
     });
 
-    this.add(previousButton);
-    this.add(nextButton);
-
-    this.preview = new Preview();
-    this.preview.position = {
-        x: Arcadia.WIDTH / 2,
-        y: Arcadia.HEIGHT / 2
-    };
-    this.add(this.preview);
-
-    this.preview.drawPreview(LEVELS[this.difficulty][this.level].clues);
+    this.add(this.previousButton);
+    this.add(this.nextButton);
 };
 
 LevelSelectScene.prototype = new Arcadia.Scene();
 
 LevelSelectScene.prototype.next = function () {
-    // Show the next level
-    if (this.level < LEVELS[this.difficulty].length - 1) {
-        this.level += 1;
-        this.preview.drawPreview(LEVELS[this.difficulty][this.level].clues);
+    var offset = -Arcadia.WIDTH,
+        self = this;
+
+    if (this.currentPage < this.totalPages - 1) {
+        sona.play('button');
+        this.nextButton.disabled = true;
+        this.nextButton.alpha = 0.5;
+
+        // Move (old) current page to the left
+        this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
+            var delay = index * LevelSelectScene.TRANSITION_DELAY;
+            window.setTimeout(function () {
+                shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
+            }, delay);
+        });
+
+        // increment currentPage
+        this.currentPage += 1;
+
+        // Toggle this var between 0 and 1
+        this.activeThumbnailPage = this.activeThumbnailPage === 1 ? 0 : 1;
+
+        // Move (new) current page to the left
+        this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
+            // Move offscreen to the right
+            shape.position = {
+                x: self.thumbnailPositions[index].x - offset,
+                y: shape.position.y
+            };
+
+            var delay = index * LevelSelectScene.TRANSITION_DELAY + 100,
+                levelIndex = self.currentPage * self.perPage + index;
+
+            shape.drawPreview(levelIndex);
+
+            window.setTimeout(function () {
+                shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
+            }, delay);
+        });
+
+        this.updatePageLabel();
+        localStorage.setItem('currentPage', this.currentPage);
+
+        window.setTimeout(function () {
+            self.nextButton.disabled = false;
+            if (self.currentPage < self.totalPages - 1) {
+                self.nextButton.alpha = 1;
+            }
+        }, LevelSelectScene.TOTAL_TRANSITION_DURATION);
+
+        if (this.previousButton.alpha < 1) {
+            this.previousButton.alpha = 1;
+        }
     }
 };
 
 LevelSelectScene.prototype.previous = function () {
-    // Show the previous level
-    if (this.level > 0) {
-        this.level -= 1;
-        this.preview.drawPreview(LEVELS[this.difficulty][this.level].clues);
+    var offset = Arcadia.WIDTH,
+        self = this;
+
+    if (this.currentPage > 0) {
+        sona.play('button');
+        this.previousButton.disabled = true;
+        this.previousButton.alpha = 0.5;
+
+        // Move (old) current page to the right
+        this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
+            var delay = (self.perPage - index) * LevelSelectScene.TRANSITION_DELAY;
+            window.setTimeout(function () {
+                shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
+            }, delay);
+        });
+
+        // decrement currentPage
+        this.currentPage -= 1;
+
+        // Toggle this var between 0 and 1
+        this.activeThumbnailPage = this.activeThumbnailPage === 1 ? 0 : 1;
+
+        // Move (new) current page to the right
+        this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
+            // Move offscreen to the left
+            shape.position = {
+                x: self.thumbnailPositions[index].x - offset,
+                y: shape.position.y
+            };
+
+            var delay = (self.perPage - index) * LevelSelectScene.TRANSITION_DELAY + 100,
+                levelIndex = self.currentPage * self.perPage + index;
+
+            shape.drawPreview(levelIndex);
+
+            window.setTimeout(function () {
+                shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
+            }, delay);
+        });
+
+        this.updatePageLabel();
+        localStorage.setItem('currentPage', this.currentPage);
+
+        window.setTimeout(function () {
+            self.previousButton.disabled = false;
+            if (self.currentPage > 0) {
+                self.previousButton.alpha = 1;
+            }
+        }, LevelSelectScene.TOTAL_TRANSITION_DURATION);
+
+        if (this.nextButton.alpha < 1) {
+            this.nextButton.alpha = 1;
+        }
     }
 };
 
+LevelSelectScene.prototype.updatePageLabel = function () {
+    this.pageLabel.text = (this.currentPage + 1) + '/' + this.totalPages;
+};
+
+LevelSelectScene.prototype.onPointEnd = function (points) {
+    var self = this,
+        cursor = {
+            size: { width: 4, height: 4 },
+            position: points[0]
+        };
+
+    // Determine if tap/click touched a thumbnail
+    this.thumbnails[this.activeThumbnailPage].forEach(function (thumbnail, index) {
+        if (thumbnail.collidesWith(cursor)) {
+            sona.play('button');
+            // thumbnail.selected = true;
+            thumbnail.border = '3px red';
+            self.selectedLevel = self.currentPage * self.perPage + index;
+            console.log("currently selected level is #" + self.selectedLevel);
+        }
+    });
+};
+
+LevelSelectScene.TRANSITION_TYPE = 'cubicInOut';
+LevelSelectScene.TRANSITION_DURATION = 400;
+LevelSelectScene.TRANSITION_DELAY = 25;
+LevelSelectScene.TOTAL_TRANSITION_DURATION = 600;
