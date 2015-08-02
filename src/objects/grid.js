@@ -37,7 +37,7 @@ Grid.prototype.path = function (context) {
     var i,
         left,
         right,
-        top, 
+        top,
         bottom;
 
     left = -this.size.width / 2;

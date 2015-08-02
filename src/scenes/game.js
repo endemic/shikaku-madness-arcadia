@@ -1,3 +1,7 @@
+/*jslint sloppy: true */
+/*globals Arcadia, window, console,
+  localStorage, sona */
+
 var GameScene = function (options) {
     Arcadia.Scene.apply(this, arguments);
 
@@ -14,14 +18,14 @@ var GameScene = function (options) {
     this.grid = new Grid({
         size: this.levelData.size,
         position: {
-            x: Arcadia.WIDTH / 2,
-            y: Arcadia.HEIGHT - (Grid.SIZE / 2)
+            x: 0,
+            y: this.size.height / 2 - Grid.SIZE / 1.75
         }
     });
     this.add(this.grid);
 
     // Clues
-    this.clues = []
+    this.clues = [];
     this.drawClues();
 
     // Squares
@@ -291,13 +295,10 @@ GameScene.prototype.drawUi = function () {
             text: 'quit',
             font: '20px sans-serif',   // TODO button throws exception w/o a font arg
         }),
-        size: {
-            width: 175,
-            height: 50
-        },
+        size: { width: 175, height: 50 },
         position: {
             x: 100,
-            y: 40
+            y: -this.size.height / 2 + 40
         },
         action: function () {
             sona.play('button');
@@ -312,15 +313,12 @@ GameScene.prototype.drawUi = function () {
         label: new Arcadia.Label({
             color: 'black',
             text: 'reset',
-            font: '20px sans-serif',
+            font: '20px sans-serif'
         }),
-        size: {
-            width: 175,
-            height: 50
-        },
+        size: { width: 175, height: 50 },
         position: {
-            x: Arcadia.WIDTH - 100,
-            y: 40
+            x: -100,
+            y: -this.size.height / 2 + 40
         },
         action: function () {
             sona.play('button');
@@ -342,8 +340,8 @@ GameScene.prototype.drawUi = function () {
             height: 100
         },
         position: {
-            x: 50,
-            y: 150
+            x: -50,
+            y: -this.size.height / 2 + 150
         }
     });
 
@@ -365,8 +363,8 @@ GameScene.prototype.drawUi = function () {
             height: 100
         },
         position: {
-            x: 250,
-            y: 150
+            x: 120,
+            y: -this.size.height / 2 + 150
         }
     });
     this.add(timerLabelBackground);
