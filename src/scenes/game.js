@@ -10,7 +10,6 @@ var GameScene = function (options) {
     this.levelData = LEVELS[this.level];
     this.ignoreInput = false;
     this.timer = 0;
-    this.color = 'white';
 
     this.verticalPadding = 81;
 
