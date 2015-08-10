@@ -80,7 +80,7 @@ var LevelSelectScene = function (options) {
         border: '1px black',
         shadow: '1px 0 5px black',
         label: new Arcadia.Label({
-            text: '< back',
+            text: '← back',
             color: 'black',
             font: '25px sans-serif'
         }),

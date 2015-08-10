@@ -1,25 +1,25 @@
 /*jslint sloppy: true */
-/*globals Arcadia, window, console,
-  localStorage, sona */
+/*globals Arcadia, window, console, localStorage, sona */
 
 var GameScene = function (options) {
     Arcadia.Scene.apply(this, arguments);
 
     options = options || {};
 
-    //this.color = '#ccc';
-    this.difficulty = options.difficulty || 'beginner';
     this.level = options.level || 0;
     this.levelData = LEVELS[this.level];
     this.ignoreInput = false;
     this.timer = 0;
+    this.color = 'white';
+
+    this.verticalPadding = 81;
 
     // Puzzle grid
     this.grid = new Grid({
         size: this.levelData.size,
         position: {
             x: 0,
-            y: this.size.height / 2 - Grid.SIZE / 1.75
+            y: this.size.height / 2 - Grid.MAX_SIZE / 2 - this.verticalPadding
         }
     });
     this.add(this.grid);
@@ -46,12 +46,25 @@ GameScene.prototype.update = function (delta) {
     this.timer += delta;
 
     var minutes,
-        seconds;
+        seconds,
+        zeroPad;
 
-    minutes = Math.round(this.timer / 60);
-    seconds = Math.round(this.timer % 60);
+    zeroPad = function (string, length) {
+        string = String(string);
+        length = parseInt(length, 10);
+
+        while (string.length < length) {
+            string = '0' + string;
+        }
+
+        return string;
+    };
+
+    minutes = zeroPad(Math.round(this.timer / 60), 2);
+    seconds = zeroPad(Math.round(this.timer % 60), 2);
+
     // TODO break this out into two labels, to prevent text jumping
-    this.timerLabel.text = minutes + ':' + seconds;
+    this.timerLabel.text = 'Time\n' + minutes + ':' + seconds;
 };
 
 GameScene.prototype.onPointStart = function (points) {
@@ -117,7 +130,7 @@ GameScene.prototype.onPointMove = function (points) {
     // Player has to move input at least 5px to start drawing a new one
     if (Arcadia.distance(points[0], this.startPoint) > 5 && this.activeSquare.alpha === 0) {
         this.activeSquare.alpha = 1;
-        this.areaLabel.text = 'Area:\n1';
+        this.areaLabel.text = 'Area\n1';
         sona.play('move');
     }
 
@@ -165,7 +178,7 @@ GameScene.prototype.onPointMove = function (points) {
     if (row !== this.previousRow || column !== this.previousColumn) {
         sona.play('move');
         console.log('trying to play sound');
-        this.areaLabel.text = 'Area:\n' + (width * height);
+        this.areaLabel.text = 'Area\n' + (width * height);
     }
 
     this.previousRow = row;
@@ -214,7 +227,7 @@ GameScene.prototype.onPointEnd = function (points) {
     // Clear out previous data
     this.startRow = this.previousRow = null;
     this.startColumn = this.previousColumn = null;
-    this.areaLabel.text = 'Area:\n--'
+    this.areaLabel.text = 'Area\n--'
 };
 
 GameScene.prototype.check = function () {
@@ -285,41 +298,40 @@ GameScene.prototype.drawUi = function () {
         timerLabelBackground,
         quitButton,
         resetButton,
+        padding = 10,
         self = this;
 
     quitButton = new Arcadia.Button({
         color: 'white',
         border: '2px black',
+        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
         label: new Arcadia.Label({
             color: 'black',
             text: 'quit',
             font: '20px sans-serif',   // TODO button throws exception w/o a font arg
         }),
-        size: { width: 175, height: 50 },
-        position: {
-            x: 100,
-            y: -this.size.height / 2 + 40
-        },
+        size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
         action: function () {
             sona.play('button');
             Arcadia.changeScene(LevelSelectScene);
         }
     });
+    quitButton.position =  {
+        x: quitButton.size.width / 2 + padding / 2,
+        y: -this.size.height / 2 + quitButton.size.height / 2 + this.verticalPadding
+    };
     this.add(quitButton);
 
     resetButton = new Arcadia.Button({
         color: 'white',
         border: '2px black',
+        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
         label: new Arcadia.Label({
             color: 'black',
             text: 'reset',
             font: '20px sans-serif'
         }),
-        size: { width: 175, height: 50 },
-        position: {
-            x: -100,
-            y: -this.size.height / 2 + 40
-        },
+        size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
         action: function () {
             sona.play('button');
             // TODO: maybe have a confirm dialog here
@@ -329,28 +341,28 @@ GameScene.prototype.drawUi = function () {
             self.squares = [];
         }
     });
+    resetButton.position =  {
+        x: -resetButton.size.width / 2 - padding / 2,
+        y: -this.size.height / 2 + resetButton.size.height / 2 + this.verticalPadding
+    };
     this.add(resetButton);
 
     areaLabelBackground = new Arcadia.Shape({
         color: 'white',
         border: '2px black',
         shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
-        size: {
-            width: 100,
-            height: 100
-        },
-        position: {
-            x: -50,
-            y: -this.size.height / 2 + 150
-        }
+        size: { width: Grid.MAX_SIZE / 2 - padding, height: 80 }
     });
-
+    areaLabelBackground.position =  {
+        x: -areaLabelBackground.size.width / 2 - padding / 2,
+        y: resetButton.position.y + resetButton.size.height / 2 + areaLabelBackground.size.height / 2 + padding
+    };
     this.add(areaLabelBackground);
 
     this.areaLabel = new Arcadia.Label({
         color: 'black',
-        text: 'Area:\n--',
-        font: '20px sans-serif'
+        text: 'Area\n--',
+        font: '28px sans-serif'
     });
     areaLabelBackground.add(this.areaLabel);
 
@@ -358,21 +370,18 @@ GameScene.prototype.drawUi = function () {
         color: 'white',
         border: '2px black',
         shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
-        size: {
-            width: 100,
-            height: 100
-        },
-        position: {
-            x: 120,
-            y: -this.size.height / 2 + 150
-        }
+        size: { width: Grid.MAX_SIZE / 2 - padding, height: 80 }
     });
+    timerLabelBackground.position =  {
+        x: timerLabelBackground.size.width / 2 + padding / 2,
+        y: quitButton.position.y + quitButton.size.height / 2 + timerLabelBackground.size.height / 2 + padding
+    };
     this.add(timerLabelBackground);
 
     this.timerLabel = new Arcadia.Label({
         color: 'black',
-        text: '00:00',
-        font: '20px sans-serif'
+        text: 'Time\n00:00',
+        font: '28px sans-serif'
     });
     timerLabelBackground.add(this.timerLabel);
 };

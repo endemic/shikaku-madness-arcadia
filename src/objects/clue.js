@@ -13,12 +13,11 @@ var Clue = function (args) {
 
     this.label = new Arcadia.Label({
         font: '24px monospace',
-        text: this.number,
-        fixed: false
+        text: this.number
     });
     this.add(this.label);
 };
 
 Clue.prototype = new Arcadia.Shape();
 
-Clue.SIZE = 34; // 375 / 10 = 37.5
+Clue.SIZE = 32; // 375 / 10 = 37.5
