@@ -6,10 +6,15 @@ var GameScene = function (options) {
 
     options = options || {};
 
+    this.tutorial = options.tutorial || false;
     this.level = options.level || 0;
     this.levelData = LEVELS[this.level];
     this.ignoreInput = false;
     this.timer = 0;
+
+    if (this.tutorial) {
+        this.levelData = TUTORIAL;
+    }
 
     this.verticalPadding = 81;
 

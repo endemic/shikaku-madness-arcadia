@@ -1,7 +1,7 @@
 var Square = function (options) {
     Arcadia.Shape.apply(this, arguments);
 
-    this.color = 'rgba(200, 50, 50, 0.5)';
+    this.color = 'rgba(200, 50, 50, 0.2)';
     this.border = '2px darkred';
 };
 

@@ -14,19 +14,7 @@ var Grid = function (options) {
     this.border = '2px black';
     this.shadow = '5px 5px 0 rgba(0, 0, 0, 0.5)';
 
-    var left = -this.size.width / 2,
-        right = this.size.width / 2,
-        top = -this.size.height / 2,
-        bottom = this.size.height / 2,
-        self = this;
-
-    // Get bounds of user interactive area
-    this.bounds = {
-        right: right + this.position.x,
-        left: (right - (this.cellSize * this.cellCount)) + this.position.x,
-        bottom: bottom + this.position.y,
-        top: (bottom - (this.cellSize * this.cellCount)) + this.position.y
-    };
+    this.calculateBounds();
 
     this.lines = new Arcadia.Shape({
         size: {
@@ -35,12 +23,14 @@ var Grid = function (options) {
         }
     });
 
+    var self = this;
+
     this.lines.path = function (context) {
         var i,
-        left,
-        right,
-        top,
-        bottom;
+            left,
+            right,
+            top,
+            bottom;
 
         left = -self.size.width / 2;
         right = self.size.width / 2;
@@ -88,4 +78,19 @@ Grid.prototype.getRowAndColumn = function (point) {
     column = Math.floor((point.x - this.bounds.left) / this.cellSize);
 
     return [row, column];
+};
+
+Grid.prototype.calculateBounds = function () {
+    var left = -this.size.width / 2,
+        right = this.size.width / 2,
+        top = -this.size.height / 2,
+        bottom = this.size.height / 2;
+
+    // Get bounds of user interactive area
+    this.bounds = {
+        right: right + this.position.x,
+        left: (right - (this.cellSize * this.cellCount)) + this.position.x,
+        bottom: bottom + this.position.y,
+        top: (bottom - (this.cellSize * this.cellCount)) + this.position.y
+    };
 };
