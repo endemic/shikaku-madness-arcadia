@@ -1,3 +1,5 @@
+/*jslint sloppy: true */
+/*globals Arcadia, window, console, localStorage, sona */
 
 var Grid = function (options) {
     Arcadia.Shape.apply(this, arguments);
@@ -62,9 +64,9 @@ Grid.CELL_SIZE = Grid.MAX_SIZE / 10;
 
 Grid.prototype.containsPoint = function (point) {
     return point.x < this.bounds.right &&
-      point.x > this.bounds.left &&
-      point.y < this.bounds.bottom &&
-      point.y > this.bounds.top;
+        point.x > this.bounds.left &&
+        point.y < this.bounds.bottom &&
+        point.y > this.bounds.top;
 };
 
 Grid.prototype.getRowAndColumn = function (point) {
@@ -81,9 +83,7 @@ Grid.prototype.getRowAndColumn = function (point) {
 };
 
 Grid.prototype.calculateBounds = function () {
-    var left = -this.size.width / 2,
-        right = this.size.width / 2,
-        top = -this.size.height / 2,
+    var right = this.size.width / 2,
         bottom = this.size.height / 2;
 
     // Get bounds of user interactive area
@@ -93,4 +93,21 @@ Grid.prototype.calculateBounds = function () {
         bottom: bottom + this.position.y,
         top: (bottom - (this.cellSize * this.cellCount)) + this.position.y
     };
+};
+
+Grid.prototype.resize = function (newCellCount) {
+    // Do nothing if passed a bogus arg
+    newCellCount = newCellCount || this.cellCount;
+
+    this.cellCount = newCellCount;
+
+    this.size = {
+        width: this.cellSize * this.cellCount,
+        height: this.cellSize * this.cellCount
+    };
+
+    // Also resize the grid lines
+    this.lines.size = this.size;
+
+    this.calculateBounds();
 };
