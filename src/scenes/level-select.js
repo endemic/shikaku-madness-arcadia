@@ -175,7 +175,7 @@ LevelSelectScene.prototype.next = function () {
 
         // Move (old) current page to the left
         this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
-            var delay = index * LevelSelectScene.TRANSITION_DELAY;
+            var delay = Math.floor(index / 3) * LevelSelectScene.TRANSITION_DELAY;
             window.setTimeout(function () {
                 shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
             }, delay);
@@ -189,16 +189,19 @@ LevelSelectScene.prototype.next = function () {
 
         // Move (new) current page to the left
         this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
+            var delay,
+                levelIndex;
+
             // Move offscreen to the right
             shape.position = {
                 x: self.thumbnailPositions[index].x - offset,
                 y: shape.position.y
             };
 
-            var delay = index * LevelSelectScene.TRANSITION_DELAY + 100,
-                levelIndex = self.currentPage * self.perPage + index;
-
+            levelIndex = self.currentPage * self.perPage + index;
             shape.drawPreview(levelIndex);
+
+            delay = Math.floor(index / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 
             window.setTimeout(function () {
                 shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
@@ -232,7 +235,7 @@ LevelSelectScene.prototype.previous = function () {
 
         // Move (old) current page to the right
         this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
-            var delay = (self.perPage - index) * LevelSelectScene.TRANSITION_DELAY;
+            var delay = Math.floor((self.perPage - index - 1) / 3) * LevelSelectScene.TRANSITION_DELAY;
             window.setTimeout(function () {
                 shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
             }, delay);
@@ -246,16 +249,19 @@ LevelSelectScene.prototype.previous = function () {
 
         // Move (new) current page to the right
         this.thumbnails[this.activeThumbnailPage].forEach(function (shape, index) {
+            var delay,
+                levelIndex;
+
             // Move offscreen to the left
             shape.position = {
                 x: self.thumbnailPositions[index].x - offset,
                 y: shape.position.y
             };
 
-            var delay = (self.perPage - index) * LevelSelectScene.TRANSITION_DELAY + 100,
-                levelIndex = self.currentPage * self.perPage + index;
-
+            levelIndex = self.currentPage * self.perPage + index;
             shape.drawPreview(levelIndex);
+
+            delay = Math.floor((self.perPage - index - 1) / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 
             window.setTimeout(function () {
                 shape.tween('position', { x: shape.position.x + offset, y: shape.position.y }, LevelSelectScene.TRANSITION_DURATION, LevelSelectScene.TRANSITION_TYPE);
@@ -285,7 +291,7 @@ LevelSelectScene.prototype.updatePageLabel = function () {
 LevelSelectScene.prototype.onPointEnd = function (points) {
     var self = this,
         cursor = {
-            size: { width: 4, height: 4 },
+            size: { width: 1, height: 1 },
             position: points[0]
         };
 
@@ -303,5 +309,5 @@ LevelSelectScene.prototype.onPointEnd = function (points) {
 
 LevelSelectScene.TRANSITION_TYPE = 'cubicInOut';
 LevelSelectScene.TRANSITION_DURATION = 400;
-LevelSelectScene.TRANSITION_DELAY = 25;
+LevelSelectScene.TRANSITION_DELAY = 100;
 LevelSelectScene.TOTAL_TRANSITION_DURATION = 600;
