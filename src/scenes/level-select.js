@@ -1,10 +1,13 @@
+/*jslint sloppy: true */
+/*globals Arcadia, window, console, localStorage, sona, LEVELS,
+GameScene, Title, Thumbnail */
+
 var LevelSelectScene = function (options) {
     Arcadia.Scene.apply(this, arguments);
-    
+
     options = options || {};
 
     var title,
-        button,
         backButton,
         startButton,
         self = this;
@@ -59,8 +62,7 @@ var LevelSelectScene = function (options) {
 
             self.add(thumbnail);
             page.push(thumbnail);
-            // console.log('Thumbnail placed at', thumbnail.position.x, thumbnail.position.y);
-        }    
+        }
     });
 
     // Move second page offscreen
@@ -68,7 +70,7 @@ var LevelSelectScene = function (options) {
         thumbnail.position = {
             x: thumbnail.position.x + self.size.width,
             y: thumbnail.position.y
-        }
+        };
     });
 
     this.activeThumbnailPage = 0;
@@ -86,7 +88,7 @@ var LevelSelectScene = function (options) {
         }),
         action: function () {
             sona.play('button');
-            Arcadia.changeScene(DifficultySelect);
+            Arcadia.changeScene(Title);
         }
     });
     this.add(backButton);
