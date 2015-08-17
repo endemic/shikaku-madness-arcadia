@@ -7,16 +7,18 @@ var GameScene = function (options) {
     options = options || {};
 
     this.tutorial = options.tutorial || false;
+    this.tutorialStep = 1;
     this.level = options.level || 0;
-    this.levelData = LEVELS[this.level];
     this.ignoreInput = false;
     this.timer = 0;
+    this.verticalPadding = 81;
+    this.drawUi();
 
     if (this.tutorial) {
         this.levelData = TUTORIAL;
+    } else {
+        this.levelData = LEVELS[this.level];
     }
-
-    this.verticalPadding = 81;
 
     // Puzzle grid
     this.grid = new Grid({
@@ -34,12 +36,21 @@ var GameScene = function (options) {
 
     // Squares
     this.squares = [];
+
     this.activeSquare = new Square({
         alpha: 0
     });
     this.add(this.activeSquare);
 
-    this.drawUi();
+    this.hintSquare = new Square({
+        alpha: 0
+    });
+    this.add(this.hintSquare);
+
+    if (this.tutorial) {
+        this.activate(this.tutorialLabelBackground);
+        this.displayTutorial();
+    }
 };
 
 GameScene.prototype = new Arcadia.Scene();
@@ -51,7 +62,8 @@ GameScene.prototype.update = function (delta) {
 
     var minutes,
         seconds,
-        zeroPad;
+        zeroPad,
+        self = this;
 
     zeroPad = function (string, length) {
         string = String(string);
@@ -69,6 +81,84 @@ GameScene.prototype.update = function (delta) {
 
     // TODO break this out into two labels, to prevent text jumping
     this.timerLabel.text = 'Time\n' + minutes + ':' + seconds;
+
+    if (this.tutorial) {
+        var position,
+            area,
+            success;
+
+        // check for placement of player squares over the hints
+        switch (this.tutorialStep) {
+            case 1:
+                position = { x: 36.5, y: 33.5 };
+                area = 9;
+                break;
+            case 2:
+                position = { x: 36.5, y: 124.75 };
+                area = 6;
+                break;
+            case 3:
+                position = { x: -54.75, y: 124.75 };
+                area = 4;
+                break;
+            case 4:
+                position = { x: -54.75, y: 33.5 };
+                area = 6;
+                break;
+        }
+
+        success = this.squares.find(function (square) {
+            return square.position.x === position.x &&
+                    square.position.y === position.y &&
+                    square.area === area;
+        });
+
+        if (success) {
+            this.tutorialStep += 1;
+            this.displayTutorial();
+        }
+    }
+};
+
+GameScene.prototype.displayTutorial = function () {
+    var text,
+        action;
+
+    action = Arcadia.ENV.mobile ? 'Tap' : 'Click';
+
+    text = [
+        'intentionally left blank',
+        action + ' and drag to\ndraw a rectangle on\ntop of each number.',
+        'Each number\nequals the area\nof its rectangle.',
+        'Rectangles cover\nonly one number.',
+        'Rectangles\ncan\'t overlap!'
+    ];
+
+    this.hintSquare.alpha = 0.5;
+
+    this.tutorialLabel.text = text[this.tutorialStep];
+
+    switch (this.tutorialStep) {
+        case 1:
+            this.hintSquare.position = { x: 36.5, y: 33.5 };
+            this.hintSquare.size = { width: 109.5, height: 109.5 };
+            break;
+        case 2:
+            this.hintSquare.position = { x: 36.5, y: 124.75 };
+            this.hintSquare.size = { width: 109.5, height: 73 };
+            break;
+        case 3:
+            this.hintSquare.position = { x: -54.75, y: 124.75 };
+            this.hintSquare.size = { width: 73, height: 73 };
+            break;
+        case 4:
+            this.hintSquare.position = { x: -54.75, y: 33.5 };
+            this.hintSquare.size = { width: 73, height: 109.5 };
+            break;
+        default:
+            this.hintSquare.alpha = 0;
+            break;
+    }
 };
 
 GameScene.prototype.onPointStart = function (points) {
@@ -190,7 +280,10 @@ GameScene.prototype.onPointMove = function (points) {
 };
 
 GameScene.prototype.onPointEnd = function (points) {
-    var width, height, area, dupe;
+    var width,
+        height,
+        area,
+        dupe;
 
     if (this.activeSquare.alpha === 1) {
         width = Math.abs(this.startColumn - this.previousColumn) + 1;
@@ -254,14 +347,14 @@ GameScene.prototype.check = function () {
             if (clue.collidesWith(square)) {
                 validClue = clue;
                 collisionCount += 1;
-            } 
+            }
         });
 
         if (collisionCount > 1 || collisionCount === 0) {
             console.log("Failing because a clue has either no squares covering it, or multiple squares covering it");
             success = false;
         } else if (validClue.number !== square.area) {
-            console.log("Clue and rect area don't match!");
+            console.log("Clue (" + validClue.number + ") and Square area (" + square.area  + ") don't match!");
             success = false;
         }
     });
@@ -283,7 +376,7 @@ GameScene.prototype.drawClues = function () {
             x = clue[0],
             y = clue[1],
             value = clue[2];
-        
+
         clueLabel = new Clue({
             number: value,
             position: {
@@ -297,7 +390,6 @@ GameScene.prototype.drawClues = function () {
 };
 
 GameScene.prototype.drawUi = function () {
-    
     var areaLabelBackground,
         timerLabelBackground,
         quitButton,
@@ -388,4 +480,21 @@ GameScene.prototype.drawUi = function () {
         font: '28px sans-serif'
     });
     timerLabelBackground.add(this.timerLabel);
+
+    this.tutorialLabelBackground = new Arcadia.Shape({
+        color: 'white',
+        border: '2px black',
+        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        size: { width: Grid.MAX_SIZE / 1.5, height: 110 },
+        position: { x: 0, y: 230 }
+    });
+    this.add(this.tutorialLabelBackground);
+    this.deactivate(this.tutorialLabelBackground);
+
+    this.tutorialLabel = new Arcadia.Label({
+        color: 'black',
+        text: 'Tutorial text goes here\nhow much text can\nfit in this box?\na lot apparently',
+        font: '20px sans-serif'
+    });
+    this.tutorialLabelBackground.add(this.tutorialLabel);
 };
