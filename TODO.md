@@ -2,7 +2,7 @@
 
 [x] Finish layout of game
 [ ] Finish layout of level select
-[ ] Create tutorial
+[x] Create tutorial
 [x] Update grid.js to allow puzzles smaller than 10x10
 [ ] Create basic level editor
 [x] Modify localStorage.getObject/setObject to namespace

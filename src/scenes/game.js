@@ -481,20 +481,21 @@ GameScene.prototype.drawUi = function () {
     });
     timerLabelBackground.add(this.timerLabel);
 
-    this.tutorialLabelBackground = new Arcadia.Shape({
-        color: 'white',
-        border: '2px black',
-        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
-        size: { width: Grid.MAX_SIZE / 1.5, height: 110 },
-        position: { x: 0, y: 230 }
-    });
-    this.add(this.tutorialLabelBackground);
-    this.deactivate(this.tutorialLabelBackground);
+    if (this.tutorial) {
+        this.tutorialLabelBackground = new Arcadia.Shape({
+            color: 'white',
+            border: '2px black',
+            shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+            size: { width: Grid.MAX_SIZE / 1.5, height: 110 },
+            position: { x: 0, y: 230 }
+        });
+        this.add(this.tutorialLabelBackground);
 
-    this.tutorialLabel = new Arcadia.Label({
-        color: 'black',
-        text: 'Tutorial text goes here\nhow much text can\nfit in this box?\na lot apparently',
-        font: '20px sans-serif'
-    });
-    this.tutorialLabelBackground.add(this.tutorialLabel);
+        this.tutorialLabel = new Arcadia.Label({
+            color: 'black',
+            text: 'Tutorial text goes here\nhow much text can\nfit in this box?\na lot apparently',
+            font: '20px sans-serif'
+        });
+        this.tutorialLabelBackground.add(this.tutorialLabel);
+    }
 };

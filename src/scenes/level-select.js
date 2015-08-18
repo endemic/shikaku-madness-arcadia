@@ -1,6 +1,6 @@
 /*jslint sloppy: true */
 /*globals Arcadia, window, console, localStorage, sona, LEVELS,
-GameScene, Title, Thumbnail */
+GameScene, TitleScene, Thumbnail */
 
 var LevelSelectScene = function (options) {
     Arcadia.Scene.apply(this, arguments);
@@ -88,7 +88,7 @@ var LevelSelectScene = function (options) {
         }),
         action: function () {
             sona.play('button');
-            Arcadia.changeScene(Title);
+            Arcadia.changeScene(TitleScene);
         }
     });
     this.add(backButton);
