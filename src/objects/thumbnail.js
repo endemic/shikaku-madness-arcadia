@@ -6,13 +6,13 @@ var Thumbnail = function () {
         height: Thumbnail.SIZE
     };
 
-    this.shadow = '1px 0 5px black';
-    this.border = '1px black';
+    this.border = '1px white';
+    this.color = null;
 
     this.pixels = new Arcadia.Pool();
     this.pixels.factory = function () {
         return new Arcadia.Shape({
-            color: 'black',
+            color: 'white',
             vertices: 0
         });
     };
@@ -62,3 +62,12 @@ Thumbnail.prototype.drawPreview = function (levelIndex) {
     });
 };
 
+Thumbnail.prototype.highlight = function () {
+    this.border = '3px white';
+    this.scale = 1.1;
+};
+
+Thumbnail.prototype.lowlight = function () {
+    this.border = '1px white';
+    this.scale = 1;
+};

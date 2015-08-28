@@ -11,7 +11,7 @@ var GameScene = function (options) {
     this.level = options.level || 0;
     this.ignoreInput = false;
     this.timer = 0;
-    this.verticalPadding = 81;
+    this.verticalPadding = 77;
     this.drawUi();
 
     if (this.tutorial) {
@@ -394,17 +394,16 @@ GameScene.prototype.drawUi = function () {
         timerLabelBackground,
         quitButton,
         resetButton,
-        padding = 10,
+        padding = 5,
         self = this;
 
     quitButton = new Arcadia.Button({
-        color: 'white',
-        border: '2px black',
-        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        color: null,
+        border: '2px white',
         label: new Arcadia.Label({
-            color: 'black',
+            color: 'white',
             text: 'quit',
-            font: '20px sans-serif',   // TODO button throws exception w/o a font arg
+            font: '20px monospace',   // TODO button throws exception w/o a font arg
         }),
         size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
         action: function () {
@@ -413,19 +412,18 @@ GameScene.prototype.drawUi = function () {
         }
     });
     quitButton.position =  {
-        x: quitButton.size.width / 2 + padding / 2,
+        x: quitButton.size.width / 2 + padding,
         y: -this.size.height / 2 + quitButton.size.height / 2 + this.verticalPadding
     };
     this.add(quitButton);
 
     resetButton = new Arcadia.Button({
-        color: 'white',
-        border: '2px black',
-        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        color: null,
+        border: '2px white',
         label: new Arcadia.Label({
-            color: 'black',
+            color: 'white',
             text: 'reset',
-            font: '20px sans-serif'
+            font: '20px monospace'
         }),
         size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
         action: function () {
@@ -438,63 +436,60 @@ GameScene.prototype.drawUi = function () {
         }
     });
     resetButton.position =  {
-        x: -resetButton.size.width / 2 - padding / 2,
+        x: -resetButton.size.width / 2 - padding,
         y: -this.size.height / 2 + resetButton.size.height / 2 + this.verticalPadding
     };
     this.add(resetButton);
 
     areaLabelBackground = new Arcadia.Shape({
-        color: 'white',
-        border: '2px black',
-        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        color: null,
+        border: '2px white',
         size: { width: Grid.MAX_SIZE / 2 - padding, height: 80 }
     });
     areaLabelBackground.position =  {
-        x: -areaLabelBackground.size.width / 2 - padding / 2,
-        y: resetButton.position.y + resetButton.size.height / 2 + areaLabelBackground.size.height / 2 + padding
+        x: -areaLabelBackground.size.width / 2 - padding,
+        y: resetButton.position.y + resetButton.size.height / 2 + areaLabelBackground.size.height / 2 + padding * 2
     };
     this.add(areaLabelBackground);
 
     this.areaLabel = new Arcadia.Label({
-        color: 'black',
+        color: 'white',
         text: 'Area\n--',
-        font: '28px sans-serif'
+        font: '28px monospace'
     });
     areaLabelBackground.add(this.areaLabel);
 
     timerLabelBackground = new Arcadia.Shape({
-        color: 'white',
-        border: '2px black',
-        shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+        color: null,
+        border: '2px white',
         size: { width: Grid.MAX_SIZE / 2 - padding, height: 80 }
     });
     timerLabelBackground.position =  {
-        x: timerLabelBackground.size.width / 2 + padding / 2,
-        y: quitButton.position.y + quitButton.size.height / 2 + timerLabelBackground.size.height / 2 + padding
+        x: timerLabelBackground.size.width / 2 + padding,
+        y: quitButton.position.y + quitButton.size.height / 2 + timerLabelBackground.size.height / 2 + padding * 2
     };
     this.add(timerLabelBackground);
 
     this.timerLabel = new Arcadia.Label({
-        color: 'black',
+        color: 'white',
         text: 'Time\n00:00',
-        font: '28px sans-serif'
+        font: '28px monospace'
     });
     timerLabelBackground.add(this.timerLabel);
 
     if (this.tutorial) {
         this.tutorialLabelBackground = new Arcadia.Shape({
-            color: 'white',
-            border: '2px black',
-            shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)',
+            color: null,
+            border: '2px white',
             size: { width: Grid.MAX_SIZE / 1.5, height: 110 },
             position: { x: 0, y: 230 }
         });
         this.add(this.tutorialLabelBackground);
 
         this.tutorialLabel = new Arcadia.Label({
-            color: 'black',
+            color: 'white',
             text: 'Tutorial text goes here\nhow much text can\nfit in this box?\na lot apparently',
-            font: '20px sans-serif'
+            font: '20px monospace'
         });
         this.tutorialLabelBackground.add(this.tutorialLabel);
     }

@@ -20,11 +20,30 @@ var LevelSelectScene = function (options) {
     this.pageLabel = new Arcadia.Label({
         position: {
             x: 0,
-            y: this.size.height / 2 - 100
-        }
+            y: 145
+        },
+        font: '24px monospace'
     });
-    this.updatePageLabel();
     this.add(this.pageLabel);
+    this.puzzleLabel = new Arcadia.Label({
+        position: {
+            x: 0,
+            y: 245
+        },
+        font: '24px monospace'
+    });
+    this.add(this.puzzleLabel);
+
+    this.difficultyLabel = new Arcadia.Label({
+        position: {
+            x: 0,
+            y: 245
+        },
+        font: '24px monospace'
+    });
+    this.add(this.puzzleLabel);
+
+    this.updatePageLabel();
 
     // Create two "pages" of thumbnail previews
     this.thumbnails = [[], []];
@@ -78,13 +97,12 @@ var LevelSelectScene = function (options) {
     backButton = new Arcadia.Button({
         position: { x: -this.size.width / 2 + 65, y: -this.size.height / 2 + 25 },
         size: { width: 120, height: 40 },
-        color: 'white',
-        border: '1px black',
-        shadow: '1px 0 5px black',
+        color: null,
+        border: '1px white',
         label: new Arcadia.Label({
-            text: '← back',
-            color: 'black',
-            font: '25px sans-serif'
+            text: '← title',
+            color: 'white',
+            font: '25px monospace'
         }),
         action: function () {
             sona.play('button');
@@ -95,10 +113,7 @@ var LevelSelectScene = function (options) {
 
     title = new Arcadia.Label({
         text: 'Choose\nPuzzle',
-        font: '65px sans-serif',
-        color: 'white',
-        border: '1px black',
-        shadow: '1px 0 5px black',
+        font: '64px monospace',
         position: { x: 0, y: -this.size.height / 2 + 130 }
     });
     this.add(title);
@@ -106,13 +121,11 @@ var LevelSelectScene = function (options) {
     startButton = new Arcadia.Button({
         position: { x: 0, y: this.size.height / 2 - 50 },
         size: { width: 180, height: 50 },
-        color: 'white',
-        border: '1px black',
-        shadow: '1px 0 5px black',
+        color: null,
+        border: '2px white',
         label: new Arcadia.Label({
-            text: 'Play',
-            color: 'black',
-            font: '35px sans-serif'
+            text: 'play',
+            font: '35px monospace'
         }),
         action: function () {
             sona.play('button');
@@ -123,17 +136,14 @@ var LevelSelectScene = function (options) {
 
     // Create previous/next buttons
     this.previousButton = new Arcadia.Button({
-        position: { x: -this.size.width / 2 + 50, y: 0 },
-        size: { width: 60, height: 60 },
-        border: '1px black',
-        color: 'white',
-        shadow: '1px 0 5px black',
+        position: { x: -this.size.width / 2 + 30, y: 0 },
+        size: { width: 50, height: 50 },
+        border: '2px white',
+        color: null,
         vertices: 0,
         label: new Arcadia.Label({
             text: '<',
-            font: '40px uni_05_53',
-            color: 'black',
-            position: { x: 0, y: -3 }
+            font: '40px monospace'
         }),
         action: function () {
             self.previous();
@@ -141,17 +151,14 @@ var LevelSelectScene = function (options) {
     });
 
     this.nextButton = new Arcadia.Button({
-        position: { x: this.size.width / 2 - 50, y: 0 },
-        size: { width: 60, height: 60 },
-        border: '1px solid black',
-        color: 'white',
-        shadow: '1px 0 5px black',
+        position: { x: this.size.width / 2 - 30, y: 0 },
+        size: { width: 50, height: 50 },
+        border: '2px white',
+        color: null,
         vertices: 0,
         label: new Arcadia.Label({
             text: '>',
-            font: '40px uni_05_53',
-            color: 'black',
-            position: { x: 0, y: -3 }
+            font: '40px monospace'
         }),
         action: function () {
             self.next();
@@ -160,6 +167,11 @@ var LevelSelectScene = function (options) {
 
     this.add(this.previousButton);
     this.add(this.nextButton);
+
+    if (options.selectedLevel !== undefined) {
+        this.selectedLevel = options.selectedLevel;
+        this.thumbnails[this.selectedLevel - this.perPage * this.currentPage].highlight();
+    }
 };
 
 LevelSelectScene.prototype = new Arcadia.Scene();
@@ -286,6 +298,7 @@ LevelSelectScene.prototype.previous = function () {
 
 LevelSelectScene.prototype.updatePageLabel = function () {
     this.pageLabel.text = (this.currentPage + 1) + '/' + this.totalPages;
+    this.puzzleLabel.text = 'Puzzle #' + this.selectedLevel;
 };
 
 LevelSelectScene.prototype.onPointEnd = function (points) {
@@ -297,12 +310,18 @@ LevelSelectScene.prototype.onPointEnd = function (points) {
 
     // Determine if tap/click touched a thumbnail
     this.thumbnails[this.activeThumbnailPage].forEach(function (thumbnail, index) {
+        var selected = self.currentPage * self.perPage + index;
+
+        thumbnail.lowlight();
+
         if (thumbnail.collidesWith(cursor)) {
             sona.play('button');
-            // thumbnail.selected = true;
-            thumbnail.border = '3px red';
-            self.selectedLevel = self.currentPage * self.perPage + index;
-            console.log("currently selected level is #" + self.selectedLevel);
+
+            thumbnail.highlight();
+
+            self.selectedLevel = selected;
+
+            self.updatePageLabel();
         }
     });
 };

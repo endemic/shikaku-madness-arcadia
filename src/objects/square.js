@@ -1,8 +1,8 @@
 var Square = function (options) {
     Arcadia.Shape.apply(this, arguments);
 
-    this.color = 'rgba(200, 50, 50, 0.2)';
-    this.border = '2px darkred';
+    this.color = 'rgba(255, 255, 255, 0.1)';
+    this.border = '2px white';
 };
 
 Square.prototype = new Arcadia.Shape();
