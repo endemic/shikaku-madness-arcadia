@@ -6,7 +6,7 @@ var Thumbnail = function () {
         height: Thumbnail.SIZE
     };
 
-    this.border = '1px white';
+    this.border = '2px white';
     this.color = null;
 
     this.pixels = new Arcadia.Pool();
@@ -23,7 +23,7 @@ Thumbnail.prototype = new Arcadia.Shape();
 
 Thumbnail.SIZE = 75;
 
-Thumbnail.prototype.drawPreview = function (levelIndex) {
+Thumbnail.prototype.drawPreview = function (levelIndex, completed) {
     if (LEVELS[levelIndex] === undefined) {
         this.alpha = 0;
         return;
@@ -36,15 +36,12 @@ Thumbnail.prototype.drawPreview = function (levelIndex) {
     var self,
         clues,
         puzzleSize,
-        previewSize,
         pixelSize;
 
     self = this;
     clues = LEVELS[levelIndex].clues;
     puzzleSize = LEVELS[levelIndex].size;
-    // previewSize = Math.floor(this.size.width / puzzleSize) * puzzleSize;
-    previewSize = Thumbnail.SIZE;
-    pixelSize = previewSize / puzzleSize;
+    pixelSize = Thumbnail.SIZE / puzzleSize;
 
     clues.forEach(function (clue) {
         var x = clue[0],
@@ -60,14 +57,23 @@ Thumbnail.prototype.drawPreview = function (levelIndex) {
             y: -self.size.height / 2 + y * pixelSize + pixelSize / 2
         };
     });
+
+    if (completed[levelIndex]) {
+        this._border.color = 'lime';
+    } else {
+        this._border.color = 'white';
+    }
+    this.dirty = true;
 };
 
 Thumbnail.prototype.highlight = function () {
-    this.border = '3px white';
+    this._border.width = 4;
+    this.dirty = true;
     this.scale = 1.1;
 };
 
 Thumbnail.prototype.lowlight = function () {
-    this.border = '1px white';
+    this._border.width = 2;
+    this.dirty = true;
     this.scale = 1;
 };

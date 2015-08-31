@@ -16,6 +16,7 @@ var LevelSelectScene = function (options) {
     this.currentPage = parseInt(localStorage.getItem('currentPage'), 10) || 0;
     this.perPage = 9;
     this.totalPages = Math.ceil(LEVELS.length / this.perPage);
+    this.completed = localStorage.getObject('completed') || Array(LEVELS.length);
 
     this.pageLabel = new Arcadia.Label({
         position: {
@@ -53,31 +54,27 @@ var LevelSelectScene = function (options) {
 
     this.thumbnails.forEach(function (page) {
         var thumbnail,
+            thumbnailIndex,
             index,
-            previewSize = 75,
             previewPadding = 10;
 
         while (page.length < self.perPage) {
-            index = page.length;
+            thumbnailIndex = page.length;
+            index = self.currentPage * self.perPage + thumbnailIndex;
 
-            self.thumbnailPositions[index] = {
-                x: -(previewSize + previewPadding) + (index % 3) * (previewSize + previewPadding),
-                y: -(previewSize + previewPadding) + Math.floor(index / 3) * (previewSize + previewPadding)
+            self.thumbnailPositions[thumbnailIndex] = {
+                x: -(Thumbnail.SIZE + previewPadding) + (thumbnailIndex % 3) * (Thumbnail.SIZE + previewPadding),
+                y: -(Thumbnail.SIZE + previewPadding) + Math.floor(thumbnailIndex / 3) * (Thumbnail.SIZE + previewPadding)
             };
 
             thumbnail = new Thumbnail({
-                size: {
-                    width: previewSize,
-                    height: previewSize
-                },
                 position: {
-                    x: self.thumbnailPositions[index].x,
-                    y: self.thumbnailPositions[index].y
-                },
-                shadow: '5px 5px 0 rgba(0, 0, 0, 0.5)'
+                    x: self.thumbnailPositions[thumbnailIndex].x,
+                    y: self.thumbnailPositions[thumbnailIndex].y
+                }
             });
 
-            thumbnail.drawPreview(self.currentPage * self.perPage + index);
+            thumbnail.drawPreview(index, self.completed);
 
             self.add(thumbnail);
             page.push(thumbnail);
@@ -211,7 +208,7 @@ LevelSelectScene.prototype.next = function () {
             };
 
             levelIndex = self.currentPage * self.perPage + index;
-            shape.drawPreview(levelIndex);
+            shape.drawPreview(levelIndex, self.completed);
 
             delay = Math.floor(index / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 
@@ -271,7 +268,7 @@ LevelSelectScene.prototype.previous = function () {
             };
 
             levelIndex = self.currentPage * self.perPage + index;
-            shape.drawPreview(levelIndex);
+            shape.drawPreview(levelIndex, self.completed);
 
             delay = Math.floor((self.perPage - index - 1) / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 

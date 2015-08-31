@@ -364,6 +364,17 @@ GameScene.prototype.check = function () {
 
 GameScene.prototype.win = function () {
     alert('u solved the puzzle, bro');
+
+    var completed = localStorage.getObject('completed')
+    if (completed === null) {
+        completed = [];
+        while (completed.length < LEVELS.length) {
+            completed.push(null);
+        }
+    }
+    completed[this.level] = true;
+    localStorage.setObject('completed', completed);
+
     sona.play('win');
     Arcadia.changeScene(LevelSelectScene);
 };
