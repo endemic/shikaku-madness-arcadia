@@ -187,9 +187,11 @@ GameScene.prototype.onPointStart = function (points) {
         x: this.grid.bounds.left + column * this.grid.cellSize + this.grid.cellSize / 2,
         y: this.grid.bounds.top + row * this.grid.cellSize + this.grid.cellSize / 2
     };
+
+    // Make slightly smaller; was causing erroneous collisions
     this.activeSquare.size = {
-        width: this.grid.cellSize,
-        height: this.grid.cellSize
+        width: this.grid.cellSize - 1,
+        height: this.grid.cellSize - 1
     };
 
     // Determine if the square collides with another;

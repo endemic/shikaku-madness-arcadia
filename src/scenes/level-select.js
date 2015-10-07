@@ -124,7 +124,7 @@ var LevelSelectScene = function (options) {
         border: '2px white',
         label: new Arcadia.Label({
             text: 'play',
-            font: '35px monospace'
+            font: '36px monospace'
         }),
         action: function () {
             sona.play('button');
