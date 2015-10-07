@@ -6,6 +6,8 @@ var GameScene = function (options) {
 
     options = options || {};
 
+    Arcadia.cycleBackground();
+
     this.tutorial = options.tutorial || false;
     this.tutorialStep = 1;
     this.level = options.level || 0;

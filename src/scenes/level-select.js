@@ -12,6 +12,8 @@ var LevelSelectScene = function (options) {
         startButton,
         self = this;
 
+    Arcadia.cycleBackground();
+
     this.selectedLevel = 0;
     this.currentPage = parseInt(localStorage.getItem('currentPage'), 10) || 0;
     this.perPage = 9;
@@ -95,11 +97,11 @@ var LevelSelectScene = function (options) {
         position: { x: -this.size.width / 2 + 65, y: -this.size.height / 2 + 25 },
         size: { width: 120, height: 40 },
         color: null,
-        border: '1px white',
+        border: '2px white',
         label: new Arcadia.Label({
             text: '← title',
             color: 'white',
-            font: '25px monospace'
+            font: '24px monospace'
         }),
         action: function () {
             sona.play('button');
