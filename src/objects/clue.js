@@ -3,8 +3,8 @@ var Clue = function (args) {
 
     this.size = { width: Clue.SIZE, height: Clue.SIZE };
     this.vertices = 0;
-    this.color = 'mediumvioletred';
-    this.border = '2px darkred';
+    this.color = null;
+    this.border = '2px white';
     this.number = 0;
 
     if (args.hasOwnProperty('number')) {
@@ -20,4 +20,4 @@ var Clue = function (args) {
 
 Clue.prototype = new Arcadia.Shape();
 
-Clue.SIZE = 32; // 375 / 10 = 37.5
+Clue.SIZE = 33; // 375 / 10 = 37.5

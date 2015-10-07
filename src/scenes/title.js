@@ -1,36 +1,33 @@
+/*jslint sloppy: true */
+/*globals Arcadia, LevelSelectScene, localStorage, sona */
 
 var TitleScene = function () {
     Arcadia.Scene.apply(this);
-
-    this.color = 'white';
 
     var titleLabel,
         startButton;
 
     titleLabel = new Arcadia.Label({
-        text: 'Shikaku Madness',
-        font: '65px uni_05_53',
-        color: '#000',
-        shadow: '0px 0px 10px #000'
+        text: 'Shikaku\nMadness',
+        font: '64px monospace',
+        position: {
+            x: 0,
+            y: -100
+        }
     });
-
-    titleLabel.position = {
-        x: Arcadia.WIDTH / 2,
-        y: 100
-    };
 
     this.add(titleLabel);
 
     startButton = new Arcadia.Button({
-        position: { x: Arcadia.WIDTH / 2, y: 400 },
-        border: '1px solid #000',
-        color: '#fff',
-        shadow: '5px -5px 0 rgba(0, 0, 0, 0.5)',
+        position: { x: 0, y: 200 },
+        size: { width: 180, height: 50 },
+        color: null,
+        border: '3px white',
         text: 'start',
-        font: '20px sans-serif',
+        font: '36px monospace',
         action: function () {
-            window.sona.playSfx('button');
-            Arcadia.changeScene(DifficultySelect);
+            sona.play('button');
+            Arcadia.changeScene(LevelSelectScene);
         }
     });
     this.add(startButton);
