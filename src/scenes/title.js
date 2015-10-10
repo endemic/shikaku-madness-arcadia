@@ -4,6 +4,8 @@
 var TitleScene = function () {
     Arcadia.Scene.apply(this);
 
+    Arcadia.cycleBackground();
+
     var titleLabel,
         startButton;
 

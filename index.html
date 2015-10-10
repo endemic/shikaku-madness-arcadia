@@ -12,16 +12,22 @@
     <!-- controls the appearance of the status bar in full-screen mode -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
+    <!-- Icons -->
+    <link href="assets/icons/icon-114.png" sizes="114x114" rel="apple-touch-icon-precomposed">
+
     <style type="text/css">
         body {
             margin: 0;
             padding: 0;
-            /*background-image: url('assets/images/background.png');*/
-            background-size: contain;
-            /*background-repeat: repeat-x;*/
-            /*cursor: url('assets/images/cursor.cur'), default;*/
+            background-size: cover;
+            cursor: pointer;
         }
-        #arcadia, #arcadia canvas {
+        #bgimages {
+            position: absolute;
+            left: -9999px;
+        }
+        #arcadia,
+        #arcadia canvas {
             -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
         }
     </style>
@@ -72,6 +78,13 @@
 
   </head>
   <body>
-    <div id="test" style="position: absolute; left: -9999px;">need to use a custom font elsewhere first</div>
+    <div id="bgimages">
+        <img src="assets/images/background_1.png">
+        <img src="assets/images/background_2.png">
+        <img src="assets/images/background_3.png">
+        <img src="assets/images/background_4.png">
+        <img src="assets/images/background_5.png">
+        <img src="assets/images/background_6.png">
+    </div>
   </body>
 </html>

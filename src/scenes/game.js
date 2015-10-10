@@ -310,10 +310,13 @@ GameScene.prototype.onPointEnd = function (points) {
         this.add(dupe);
         this.squares.push(dupe);
 
+        dupe.tween('scale', 1.1, 50, 'linearNone', function () {
+            dupe.tween('scale', 1, 100);
+        });
+
+        // TODO ?
         // Check if square overlaps a clue
-
         // If square overlaps a single clue, check if the area matches the clue
-
         // If area matches the single clue, give the square a different color
 
         // Reset the activeSquare
