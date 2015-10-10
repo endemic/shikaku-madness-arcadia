@@ -25,6 +25,10 @@
   "homepage": "https://github.com/endemic/shikaku-madness-arcadia",
   "devDependencies": {
     "arcadia": "file:../arcadia",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0",
     "sona": "^1.0.3"
   }
 }
