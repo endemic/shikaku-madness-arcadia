@@ -1,2 +1,4 @@
-# shikaku-madness-arcadia
+# Shikaku Madness
+
 Remake of Shikaku Madness using Arcadia.js
+
