@@ -275,7 +275,6 @@ GameScene.prototype.onPointMove = function (points) {
 
     if (row !== this.previousRow || column !== this.previousColumn) {
         sona.play('move');
-        console.log('trying to play sound');
         this.areaLabel.text = 'Area\n' + (width * height);
     }
 
@@ -426,7 +425,11 @@ GameScene.prototype.drawUi = function () {
         size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
         action: function () {
             sona.play('button');
-            Arcadia.changeScene(LevelSelectScene);
+
+            if (confirm('Quit?')) {
+                sona.play('button');
+                Arcadia.changeScene(LevelSelectScene);
+            }
         }
     });
     quitButton.position =  {
@@ -446,11 +449,14 @@ GameScene.prototype.drawUi = function () {
         size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
         action: function () {
             sona.play('button');
-            // TODO: maybe have a confirm dialog here
-            self.squares.forEach(function (square) {
-                self.remove(square);
-            });
-            self.squares = [];
+
+            if (confirm('Reset?')) {
+                sona.play('button');
+                self.squares.forEach(function (square) {
+                    self.remove(square);
+                });
+                self.squares = [];
+            }
         }
     });
     resetButton.position =  {
