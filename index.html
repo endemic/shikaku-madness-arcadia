@@ -19,7 +19,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-size: cover;
+            background-size: 100% 100%;
             cursor: pointer;
         }
         #bgimages {
@@ -55,6 +55,7 @@
     <script src="src/scenes/level-select.js"></script>
     <script src="src/scenes/game.js"></script>
     <script src="src/scenes/editor.js"></script>
+    <script src="src/scenes/rules.js"></script>
 
     <script>
         window.onload = function () {
@@ -69,7 +70,7 @@
                 new Arcadia.Game({
                     width: 375,
                     height: 667,
-                    scene: LevelSelectScene,
+                    scene: TitleScene,
                     scaleToFit: true
                 });
             });
