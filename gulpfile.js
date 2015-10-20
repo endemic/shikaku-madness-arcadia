@@ -49,8 +49,8 @@ gulp.task('web', ['concat', 'compress'], function () {
         .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku/javascript'));
 
     gulp.src(['assets/**'])
-        .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku'));
+        .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku/assets'));
 
-    gulp.src(['dist/index'], { base: 'dist' })
+    gulp.src(['dist/index.html'], { base: 'dist' })
         .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku'));
 });
