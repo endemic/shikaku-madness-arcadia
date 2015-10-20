@@ -1,0 +1,14 @@
+2015-10-20 08:01:44.572 Shikaku Madness[63836:11400119] DiskCookieStorage changing policy from 2 to 0, cookie file: file:///Users/demick/Library/Developer/CoreSimulator/Devices/9A4E450E-5912-47C4-842E-1359BEC0AAC7/data/Containers/Data/Application/7B120FF5-9A0E-4D84-A50D-9F1ECC073224/Library/Cookies/com.ganbarugames.shikaku.binarycookies
+2015-10-20 08:01:45.383 Shikaku Madness[63836:11400119] Apache Cordova native platform version 3.9.1 is starting.
+2015-10-20 08:01:45.384 Shikaku Madness[63836:11400119] Multi-tasking -> Device: YES, App: YES
+2015-10-20 08:01:45.451 Shikaku Madness[63836:11400119] Unlimited access to network resources
+2015-10-20 08:01:45.465 Shikaku Madness[63836:11400119] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2015-10-20 08:01:48.185 Shikaku Madness[63836:11400119] Resetting plugins due to page load.
+2015-10-20 08:01:49.433 Shikaku Madness[63836:11400119] Finished load of: file:///Users/demick/Library/Developer/CoreSimulator/Devices/9A4E450E-5912-47C4-842E-1359BEC0AAC7/data/Containers/Bundle/Application/DF3646F0-C3B0-4E2A-8779-2A01C9DCE853/Shikaku%20Madness.app/www/index.html

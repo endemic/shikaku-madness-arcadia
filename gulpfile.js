@@ -34,6 +34,9 @@ gulp.task('cordova', ['concat', 'compress'], function () {
     gulp.src(['node_modules/arcadia/dist/arcadia.js'], { base: 'node_modules/arcadia/dist' })
         .pipe(gulp.dest('cordova/www/js'));
 
+    gulp.src(['node_modules/sona/dist/sona.js'], { base: 'node_modules/sona/dist' })
+        .pipe(gulp.dest('cordova/www/js'));
+
     gulp.src(['assets/**'])
         .pipe(gulp.dest('cordova/www/assets'));
 });
