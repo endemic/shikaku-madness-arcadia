@@ -1,8 +1,21 @@
 # TODO
 
 [ ] Finish layout of level select
+	[ ] Change page label to read "Page 1 of 34" or whatever, and
+		move it to above of the thumbnails
+	[ ] Add a "Completed?" label
+	[ ] Make completed puzzle thumbnails have a different colored border/background
 [ ] Create basic level editor
-[ ] Create sound effect for placing squares
+	[ ] Add 15 or so "beginner" levels
+[ ] Extract tutorial config to allow for hints on more puzzles
+
+[x] Add a "rules" scene
+[x] Create sound effect for placing squares
+
+# Future
+
+[ ] Create visual effect for removing squares
+	- scale up + fade
 
 -------------------
 
