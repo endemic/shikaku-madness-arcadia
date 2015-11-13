@@ -249,28 +249,19 @@ LevelSelectScene.prototype.drawUi = function () {
         self = this;
 
     this.pageLabel = new Arcadia.Label({
-        position: {
-            x: 0,
-            y: 145
-        },
+        position: { x: 0, y: 145 },
         font: '24px monospace'
     });
     this.add(this.pageLabel);
 
     this.puzzleLabel = new Arcadia.Label({
-        position: {
-            x: 0,
-            y: 185
-        },
+        position: { x: 0, y: 185 },
         font: '24px monospace'
     });
     this.add(this.puzzleLabel);
 
     this.difficultyLabel = new Arcadia.Label({
-        position: {
-            x: 0,
-            y: 220
-        },
+        position: { x: 0, y: 220 },
         font: '24px monospace'
     });
     this.add(this.difficultyLabel);
@@ -281,7 +272,7 @@ LevelSelectScene.prototype.drawUi = function () {
         color: null,
         border: '2px white',
         label: new Arcadia.Label({
-            text: '← title',
+            text: '< title',
             color: 'white',
             font: '24px monospace'
         }),

@@ -274,8 +274,8 @@ GameScene.prototype.onPointMove = function (points) {
     }
 
     if (row !== this.previousRow || column !== this.previousColumn) {
-        sona.play('move');
         this.areaLabel.text = 'Area\n' + (width * height);
+        sona.play('move');
     }
 
     this.previousRow = row;
@@ -313,6 +313,8 @@ GameScene.prototype.onPointEnd = function (points) {
             dupe.tween('scale', 1, 100);
         });
 
+        sona.play('place');
+
         // TODO ?
         // Check if square overlaps a clue
         // If square overlaps a single clue, check if the area matches the clue
@@ -330,7 +332,7 @@ GameScene.prototype.onPointEnd = function (points) {
     // Clear out previous data
     this.startRow = this.previousRow = null;
     this.startColumn = this.previousColumn = null;
-    this.areaLabel.text = 'Area\n--'
+    this.areaLabel.text = 'Area\n--';
 };
 
 GameScene.prototype.check = function () {
@@ -420,7 +422,7 @@ GameScene.prototype.drawUi = function () {
         label: new Arcadia.Label({
             color: 'white',
             text: 'quit',
-            font: '20px monospace',   // TODO button throws exception w/o a font arg
+            font: '20px monospace'   // TODO button throws exception w/o a font arg
         }),
         size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
         action: function () {

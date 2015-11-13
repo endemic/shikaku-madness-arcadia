@@ -43,7 +43,7 @@ var RulesScene = function () {
         color: null,
         border: '3px white',
         label: new Arcadia.Label({
-            text: '<- title',
+            text: '< title',
             color: 'white',
             font: '24px monospace'
         }),
