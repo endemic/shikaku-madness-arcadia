@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     rename = require('gulp-rename');
 
 gulp.task('default', function () {
-    console.log('stuff');
+    console.log('Gulp tasks: `concat`, `compress`, `cordova`, `web`');
 });
 
 gulp.task('concat', function () {
