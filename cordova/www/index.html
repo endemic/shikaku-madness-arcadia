@@ -6,30 +6,24 @@
 	<!-- Set viewport -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-	<!-- Launch in "fullscreen" mode if from home screen -->
-	<meta name="mobile-web-app-capable" content="yes">
-
-	<!-- Does Apple support the above? -->
-	<meta name="apple-mobile-web-app-capable" content="yes">
-
-	<!-- controls the appearance of the status bar in full-screen mode -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-	<!-- iOS icons -->
-	<link href="assets/icons/114.png" sizes="114x114" rel="apple-touch-icon-precomposed">
-
-	<style type="text/css">
-	    body { margin: 0; padding: 0; background-size: contain; }
-	    #arcadia,
-	    #arcadia canvas {
-	      cursor: pointer;
-	      -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-	    }
-	    #bgimages {
-	        position: absolute;
-	        left: -9999px;
-	    }
-	</style>
+  <style type="text/css">
+      body {
+          margin: 0;
+          padding: 0;
+          background-size: 100% 100%;
+          cursor: pointer;
+      }
+      #bgimages {
+          position: absolute;
+          left: -9999px;
+      }
+      #arcadia,
+      #arcadia canvas {
+          -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+          -webkit-user-select: none;
+          -moz-user-select: none;
+      }
+  </style>
 
 	<!-- Cordova -->
 	<script type="text/javascript" src="cordova.js"></script>
