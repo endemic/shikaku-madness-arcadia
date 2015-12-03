@@ -48,7 +48,7 @@ var LevelSelectScene = function (options) {
                 }
             });
 
-            thumbnail.drawPreview(index, self.completed);
+            thumbnail.drawPreview(index, self.completed[index]);
 
             self.add(thumbnail);
             page.push(thumbnail);
@@ -118,7 +118,7 @@ LevelSelectScene.prototype.next = function () {
             };
 
             levelIndex = self.currentPage * self.perPage + index;
-            shape.drawPreview(levelIndex, self.completed);
+            shape.drawPreview(levelIndex, self.completed[levelIndex]);
 
             delay = Math.floor(index / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 
@@ -184,7 +184,7 @@ LevelSelectScene.prototype.previous = function () {
             };
 
             levelIndex = self.currentPage * self.perPage + index;
-            shape.drawPreview(levelIndex, self.completed);
+            shape.drawPreview(levelIndex, self.completed[levelIndex]);
 
             delay = Math.floor((self.perPage - index - 1) / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 
@@ -215,9 +215,10 @@ LevelSelectScene.prototype.previous = function () {
 };
 
 LevelSelectScene.prototype.updatePageLabel = function () {
-    this.pageLabel.text = (this.currentPage + 1) + '/' + this.totalPages;
-    this.puzzleLabel.text = 'Puzzle #' + this.selectedLevel;
+    this.pageLabel.text = 'Page ' + (this.currentPage + 1) + ' of ' + this.totalPages;
+    this.puzzleLabel.text = 'Puzzle #' + (this.selectedLevel + 1);
     this.difficultyLabel.text = 'Difficulty: ' + LEVELS[this.selectedLevel].difficulty;
+    this.completedLabel.text = 'Completed? ' + (this.completed[this.selectedLevel] ? '✓' : '✗');
 };
 
 LevelSelectScene.prototype.onPointEnd = function (points) {
@@ -249,22 +250,28 @@ LevelSelectScene.prototype.drawUi = function () {
         self = this;
 
     this.pageLabel = new Arcadia.Label({
-        position: { x: 0, y: 145 },
-        font: '24px monospace'
+        position: { x: 0, y: -145 },
+        font: '20px monospace'
     });
     this.add(this.pageLabel);
 
     this.puzzleLabel = new Arcadia.Label({
-        position: { x: 0, y: 185 },
+        position: { x: 0, y: 160 },
         font: '24px monospace'
     });
     this.add(this.puzzleLabel);
 
     this.difficultyLabel = new Arcadia.Label({
-        position: { x: 0, y: 220 },
+        position: { x: 0, y: 190 },
         font: '24px monospace'
     });
     this.add(this.difficultyLabel);
+
+    this.completedLabel = new Arcadia.Label({
+        position: { x: 0, y: 220 },
+        font: '24px monospace'
+    });
+    this.add(this.completedLabel);
 
     backButton = new Arcadia.Button({
         position: { x: -this.size.width / 2 + 65, y: -this.size.height / 2 + 25 },
@@ -285,8 +292,8 @@ LevelSelectScene.prototype.drawUi = function () {
 
     title = new Arcadia.Label({
         text: 'Choose\nPuzzle',
-        font: '64px monospace',
-        position: { x: 0, y: -this.size.height / 2 + 130 }
+        font: '48px monospace',
+        position: { x: 0, y: -this.size.height / 2 + 110 }
     });
     this.add(title);
 
