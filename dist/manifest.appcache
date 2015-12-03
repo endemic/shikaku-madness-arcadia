@@ -1,0 +1,19 @@
+CACHE MANIFEST
+# ab73bc467c33253cdcac27c934ca33fa
+
+CACHE:
+javascript/shikaku-madness.min.js
+javascript/arcadia.js
+javascript/sona.js
+assets/images/background_1.png
+assets/images/background_2.png
+assets/images/background_3.png
+assets/images/background_4.png
+assets/images/background_5.png
+assets/images/background_6.png
+assets/sounds/button.mp3
+assets/sounds/erase.mp3
+assets/sounds/move.mp3
+assets/sounds/place.mp3
+assets/sounds/tick.mp3
+assets/sounds/win.mp3

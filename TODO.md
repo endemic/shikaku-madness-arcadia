@@ -9,8 +9,14 @@
 	[ ] Add 15 or so "beginner" levels
 [ ] Extract tutorial config to allow for hints on more puzzles
 
+[x] Copy appcache and webapp manifests to web target
 [x] Add a "rules" scene
 [x] Create sound effect for placing squares
+
+# Bugs
+
+[ ] When instantiating on the first page of level select, user can't go to
+    previous pages
 
 # Future
 

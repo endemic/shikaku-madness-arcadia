@@ -1,22 +1,26 @@
 <html>
   <head>
+    <title>Shikaku Madness</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
     <!-- Set viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <!-- Launch in "fullscreen" mode if from home screen -->
+    <!-- App manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Standalone app tags -->
     <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="assets/icons/192.png">
 
-    <!-- Does Apple support the above? -->
+    <!-- Proprietary Apple tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-
-    <!-- controls the appearance of the status bar in full-screen mode -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Shikaku">
 
-    <!-- iOS Splash -->
-    <link href="assets/image/splash.png" rel="apple-touch-startup-image">
-
-    <!-- iOS Icons -->
-    <link href="assets/icons/icon-114.png" rel="apple-touch-icon">
+    <link rel="apple-touch-startup-image" href="assets/images/splash.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/icons/120.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/180.png">
 
     <style type="text/css">
         body {
@@ -32,6 +36,8 @@
         #arcadia,
         #arcadia canvas {
             -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            -webkit-user-select: none;
+            -moz-user-select: none;
         }
     </style>
 
@@ -74,7 +80,7 @@
                 new Arcadia.Game({
                     width: 375,
                     height: 667,
-                    scene: TitleScene,
+                    scene: LevelSelectScene,
                     scaleToFit: true
                 });
             });
