@@ -8,7 +8,7 @@ var GameScene = function (options) {
 
     Arcadia.cycleBackground();
 
-    this.tutorial = options.tutorial || false;
+    this.tutorial = !!options.tutorial;
     this.tutorialStep = 1;
     this.level = options.level || 0;
     this.ignoreInput = false;
@@ -92,26 +92,26 @@ GameScene.prototype.update = function (delta) {
         // check for placement of player squares over the hints
         switch (this.tutorialStep) {
             case 1:
-                position = { x: 36.5, y: 33.5 };
+                position = { x: 37, y: 33 };
                 area = 9;
                 break;
             case 2:
-                position = { x: 36.5, y: 124.75 };
+                position = { x: 37, y: 126 };
                 area = 6;
                 break;
             case 3:
-                position = { x: -54.75, y: 124.75 };
+                position = { x: -56, y: 126 };
                 area = 4;
                 break;
             case 4:
-                position = { x: -54.75, y: 33.5 };
+                position = { x: -56, y: 33 };
                 area = 6;
                 break;
         }
 
         success = this.squares.find(function (square) {
-            return square.position.x === position.x &&
-                    square.position.y === position.y &&
+            return Math.round(square.position.x) === position.x &&
+                    Math.round(square.position.y) === position.y &&
                     square.area === area;
         });
 
