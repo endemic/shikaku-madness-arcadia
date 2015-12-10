@@ -1,10 +1,10 @@
 # TODO
 
 [ ] Finish layout of level select
-	[ ] Change page label to read "Page 1 of 34" or whatever, and
+	[x] Change page label to read "Page 1 of 34" or whatever, and
 		move it to above of the thumbnails
-	[ ] Add a "Completed?" label
-	[ ] Make completed puzzle thumbnails have a different colored border/background
+	[x] Add a "Completed?" label
+	[x] Make completed puzzle thumbnails have a different colored border/background
 [ ] Create basic level editor
 	[ ] Add 15 or so "beginner" levels
 [ ] Extract tutorial config to allow for hints on more puzzles
@@ -15,7 +15,7 @@
 
 # Bugs
 
-[ ] When instantiating on the first page of level select, user can't go to
+[x] When instantiating on the first page of level select, user can't go to
     previous pages
 
 # Future
