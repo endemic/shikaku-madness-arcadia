@@ -8,6 +8,7 @@ var TitleScene = function () {
 
     var titleLabel,
         startButton,
+        tutorialButton,
         rulesButton,
         editorButton,
         padding = 10;
@@ -24,10 +25,10 @@ var TitleScene = function () {
     this.add(titleLabel);
 
     startButton = new Arcadia.Button({
-        position: { x: 0, y: 150 },
+        position: { x: 0, y: 80 },
         size: { width: 180, height: 50 },
         color: null,
-        border: '3px white',
+        border: '2px white',
         text: 'start',
         font: '36px monospace',
         action: function () {
@@ -37,11 +38,25 @@ var TitleScene = function () {
     });
     this.add(startButton);
 
-    rulesButton = new Arcadia.Button({
+    tutorialButton = new Arcadia.Button({
         position: { x: 0, y: startButton.position.y + startButton.size.height + padding },
         size: { width: 180, height: 50 },
         color: null,
-        border: '3px white',
+        border: '2px white',
+        text: 'tutorial',
+        font: '36px monospace',
+        action: function () {
+            sona.play('button');
+            Arcadia.changeScene(GameScene, { tutorial: true });
+        }
+    });
+    this.add(tutorialButton);
+
+    rulesButton = new Arcadia.Button({
+        position: { x: 0, y: tutorialButton.position.y + tutorialButton.size.height + padding },
+        size: { width: 180, height: 50 },
+        color: null,
+        border: '2px white',
         text: 'rules',
         font: '36px monospace',
         action: function () {
@@ -55,7 +70,7 @@ var TitleScene = function () {
         position: { x: 0, y: rulesButton.position.y + rulesButton.size.height + padding },
         size: { width: 180, height: 50 },
         color: null,
-        border: '3px white',
+        border: '2px white',
         text: 'editor',
         font: '36px monospace',
         action: function () {
