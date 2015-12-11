@@ -248,7 +248,7 @@ LevelSelectScene.prototype.onPointEnd = function (points) {
 LevelSelectScene.prototype.drawUi = function () {
     var title,
         backButton,
-        startButton,
+        playButton,
         self = this;
 
     this.pageLabel = new Arcadia.Label({
@@ -299,7 +299,7 @@ LevelSelectScene.prototype.drawUi = function () {
     });
     this.add(title);
 
-    startButton = new Arcadia.Button({
+    playButton = new Arcadia.Button({
         position: { x: 0, y: this.size.height / 2 - 50 },
         size: { width: 180, height: 50 },
         color: null,
@@ -310,10 +310,15 @@ LevelSelectScene.prototype.drawUi = function () {
         }),
         action: function () {
             sona.play('button');
-            Arcadia.changeScene(GameScene, { level: self.selectedLevel });
+
+            if (Arcadia.isLocked() && self.selectedLevel >= 15) {
+                Arcadia.changeScene(UnlockScene);
+            } else {
+                Arcadia.changeScene(GameScene, { level: self.selectedLevel });
+            }
         }
     });
-    this.add(startButton);
+    this.add(playButton);
 
     // Create previous/next buttons
     this.previousButton = new Arcadia.Button({

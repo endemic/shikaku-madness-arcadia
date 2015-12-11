@@ -1,10 +1,11 @@
 # TODO
 
-[ ] Finish layout of level select
+[x] Finish layout of level select
 	[x] Change page label to read "Page 1 of 34" or whatever, and
 		move it to above of the thumbnails
 	[x] Add a "Completed?" label
 	[x] Make completed puzzle thumbnails have a different colored border/background
+[ ] Add "reset data" option to credits view
 [ ] Create basic level editor
 	[ ] Add 15 or so "beginner" levels
 [ ] Extract tutorial config to allow for hints on more puzzles

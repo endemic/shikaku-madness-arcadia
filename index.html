@@ -68,6 +68,8 @@
     <script src="src/scenes/game.js"></script>
     <script src="src/scenes/editor.js"></script>
     <script src="src/scenes/rules.js"></script>
+    <script src="src/scenes/credits.js"></script>
+    <script src="src/scenes/unlock.js"></script>
 
     <script>
         window.onload = function () {
@@ -86,6 +88,8 @@
                     scene: LevelSelectScene,
                     scaleToFit: true
                 });
+
+                UnlockScene.initializeStore();
             });
         };
     </script>

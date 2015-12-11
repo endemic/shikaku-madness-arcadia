@@ -41,24 +41,24 @@
 
 		function initialize() {
 			window.sona = new Sona([
-                { url: 'assets/sounds/button.mp3', id: 'button' },
-                { url: 'assets/sounds/erase.mp3', id: 'erase' },
-                { url: 'assets/sounds/place.mp3', id: 'place' },
-                { url: 'assets/sounds/move.mp3', id: 'move' },
-                { url: 'assets/sounds/win.mp3', id: 'win' }
-            ]);
+          { url: 'assets/sounds/button.mp3', id: 'button' },
+          { url: 'assets/sounds/erase.mp3', id: 'erase' },
+          { url: 'assets/sounds/place.mp3', id: 'place' },
+          { url: 'assets/sounds/move.mp3', id: 'move' },
+          { url: 'assets/sounds/win.mp3', id: 'win' }
+      ]);
 
-            window.sona.load(function () {
-                new Arcadia.Game({
-                    width: 375,
-                    height: 667,
-                    scene: TitleScene,
-                    scaleToFit: true
-                });
-            });
+      window.sona.load(function () {
+          new Arcadia.Game({
+              width: 375,
+              height: 667,
+              scene: TitleScene,
+              scaleToFit: true
+          });
+      });
 
-            // TODO
-			// UnlockScene.initializeStore();
+      // TODO
+			UnlockScene.initializeStore();
 		}
 	</script>
 </head>
