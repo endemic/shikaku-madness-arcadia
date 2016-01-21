@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
+        },
+        "cc.fovea.cordova.purchase": {
+            "PACKAGE_NAME": "com.ganbarugames.shikaku"
         }
     },
     "dependent_plugins": {}

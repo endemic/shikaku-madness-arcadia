@@ -39,6 +39,10 @@
 		7E7966E61810823500FA85AD /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DC1810823500FA85AD /* icon-small.png */; };
 		7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DD1810823500FA85AD /* icon-small@2x.png */; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
+		BEC4D4D520364110A0402368 /* InAppPurchase.m in Sources */ = {isa = PBXBuildFile; fileRef = F13F8BCFC852415AA3B44F55 /* InAppPurchase.m */; };
+		9CCB8D80164C4265A3FAF99D /* SKProduct+LocalizedPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = 3668E9EABD61470CB4CEAD42 /* SKProduct+LocalizedPrice.m */; };
+		06E99835394244318EF4C056 /* FileUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEB4A0D7E824BFBB67A95C5 /* FileUtility.m */; };
+		0135B78BAB7F47449E9F99D3 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F2E575F4664564B5F44290 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +108,13 @@
 		EB87FDF31871DA8E0020F90C /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
 		EB87FDF41871DAF40020F90C /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = ../../config.xml; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "Shikaku Madness/config.xml"; sourceTree = "<group>"; };
+		F13F8BCFC852415AA3B44F55 /* InAppPurchase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "InAppPurchase.m"; path = "cc.fovea.cordova.purchase/InAppPurchase.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		3668E9EABD61470CB4CEAD42 /* SKProduct+LocalizedPrice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "SKProduct+LocalizedPrice.m"; path = "cc.fovea.cordova.purchase/SKProduct+LocalizedPrice.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		AAEB4A0D7E824BFBB67A95C5 /* FileUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "FileUtility.m"; path = "cc.fovea.cordova.purchase/FileUtility.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		A1F79ADF6369445291CEB17F /* InAppPurchase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "InAppPurchase.h"; path = "cc.fovea.cordova.purchase/InAppPurchase.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		9903A6754C3F486E9B06BB3C /* SKProduct+LocalizedPrice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SKProduct+LocalizedPrice.h"; path = "cc.fovea.cordova.purchase/SKProduct+LocalizedPrice.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		8AC99DDEF8074DDF9A80F2B3 /* FileUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "FileUtility.h"; path = "cc.fovea.cordova.purchase/FileUtility.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		51F2E575F4664564B5F44290 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "StoreKit.framework"; path = "System/Library/Frameworks/StoreKit.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +126,7 @@
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				305D5FD1115AB8F900A74A75 /* MobileCoreServices.framework in Frameworks */,
+				0135B78BAB7F47449E9F99D3 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +199,7 @@
 				5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				305D5FD0115AB8F900A74A75 /* MobileCoreServices.framework */,
+				51F2E575F4664564B5F44290 /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -202,6 +215,12 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				F13F8BCFC852415AA3B44F55 /* InAppPurchase.m */,
+				3668E9EABD61470CB4CEAD42 /* SKProduct+LocalizedPrice.m */,
+				AAEB4A0D7E824BFBB67A95C5 /* FileUtility.m */,
+				A1F79ADF6369445291CEB17F /* InAppPurchase.h */,
+				9903A6754C3F486E9B06BB3C /* SKProduct+LocalizedPrice.h */,
+				8AC99DDEF8074DDF9A80F2B3 /* FileUtility.h */,
 			);
 			name = Plugins;
 			path = "Shikaku Madness/Plugins";
@@ -386,6 +405,9 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
+				BEC4D4D520364110A0402368 /* InAppPurchase.m in Sources */,
+				9CCB8D80164C4265A3FAF99D /* SKProduct+LocalizedPrice.m in Sources */,
+				06E99835394244318EF4C056 /* FileUtility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
