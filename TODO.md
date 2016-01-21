@@ -1,10 +1,5 @@
 # TODO
 
-[x] Finish layout of level select
-	[x] Change page label to read "Page 1 of 34" or whatever, and
-		move it to above of the thumbnails
-	[x] Add a "Completed?" label
-	[x] Make completed puzzle thumbnails have a different colored border/background
 [ ] Add "reset data" option to credits view
 [ ] Create basic level editor
 	[ ] Add 15 or so "beginner" levels
@@ -13,6 +8,11 @@
 [x] Copy appcache and webapp manifests to web target
 [x] Add a "rules" scene
 [x] Create sound effect for placing squares
+[x] Finish layout of level select
+	[x] Change page label to read "Page 1 of 34" or whatever, and
+		move it to above of the thumbnails
+	[x] Add a "Completed?" label
+	[x] Make completed puzzle thumbnails have a different colored border/background
 
 # Bugs
 

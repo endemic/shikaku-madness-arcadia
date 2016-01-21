@@ -1,8 +1,6 @@
 /*globals Arcadia, LevelSelectScene, CreditsScene, localStorage, store, window */
 
 var UnlockScene = function () {
-    'use strict';
-
     Arcadia.Scene.apply(this, arguments);
 
     var noButton,
