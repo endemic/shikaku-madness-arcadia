@@ -20,3 +20,5 @@ Arcadia.cycleBackground = function () {
     localStorage.setItem('backgroundCounter', backgroundCounter);
     document.body.style['background-image'] = 'url("assets/images/background_' + backgroundCounter + '.png")';
 };
+
+Arcadia.freeLevels = 20;

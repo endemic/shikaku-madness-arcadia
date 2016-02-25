@@ -1,74 +1,73 @@
+/*jslint this*/
 /*globals Arcadia, LevelSelectScene, CreditsScene, localStorage, store, window */
 
 var UnlockScene = function () {
-    Arcadia.Scene.apply(this, arguments);
+    'use strict';
 
     var noButton,
         restoreButton,
         yesButton,
-        description;
+        description,
+        buttonPadding = 15;
+
+    Arcadia.Scene.apply(this, arguments);
 
     Arcadia.cycleBackground();
 
     // Should never occur; for testing on desktop only
-    window.PRODUCT_DATA = window.PRODUCT_DATA || { price: '$999' };
+    if (window.PRODUCT_DATA === undefined) {
+        window.PRODUCT_DATA = {price: '$999'};
+    }
 
     description = new Arcadia.Label({
         position: {
-            x: Arcadia.WIDTH / 2,
-            y: Arcadia.HEIGHT / 3
+            x: 0,
+            y: -100
         },
         font: '20px monospace',
-        text: 'I hope you\'ve enjoyed\nsolving puzzles so far.\nWould you like to\nunlock 105 more \nfor only ' + window.PRODUCT_DATA.price + '?'
+        text: 'I hope you\'ve enjoyed\nsolving puzzles so far.\nWould you like to\nunlock 105 more puzzles\nfor only ' + window.PRODUCT_DATA.price + '?'
     });
     this.add(description);
 
+    /* Buttons */
+
     yesButton = new Arcadia.Button({
-        position: {
-            x: Arcadia.WIDTH / 2,
-            y: Arcadia.HEIGHT - 250
-        },
+        position: {x: 0, y: 75},
         color: null,
         border: '2px #fff',
-        padding: 15,
-        text: 'Yeah!',
+        padding: buttonPadding,
+        text: 'Yes, please',
         font: '20px monospace',
         action: function () {
-            Arcadia.playSfx('button');
+            sona.play('button');
             window.store.order(UnlockScene.PRODUCT_ID);
         }
     });
     this.add(yesButton);
 
     noButton = new Arcadia.Button({
-        position: {
-            x: Arcadia.WIDTH / 2,
-            y: Arcadia.HEIGHT - 200
-        },
+        position: { x: 0, y: 150 },
         color: null,
         border: '2px #fff',
-        padding: 15,
-        text: 'Nah.',
+        padding: buttonPadding,
+        text: 'No, thanks',
         font: '20px monospace',
         action: function () {
-            Arcadia.playSfx('button');
+            sona.play('button');
             Arcadia.changeScene(CreditsScene);
         }
     });
     this.add(noButton);
 
     restoreButton = new Arcadia.Button({
-        position: {
-            x: Arcadia.WIDTH / 2,
-            y: Arcadia.HEIGHT - 100
-        },
+        position: { x: 0, y: 225 },
         color: null,
         border: '2px #fff',
-        padding: 15,
+        padding: buttonPadding,
         text: 'Restore purchase',
         font: '20px monospace',
         action: function () {
-            Arcadia.playSfx('button');
+            sona.play('button');
             window.store.order(UnlockScene.PRODUCT_ID);
         }
     });
@@ -80,6 +79,8 @@ UnlockScene.prototype = new Arcadia.Scene();
 UnlockScene.PRODUCT_ID = 'com.ganbarugames.shikaku.unlock';
 
 UnlockScene.initializeStore = function () {
+    'use strict';
+
     if (window.store === undefined) {
         return;
     }

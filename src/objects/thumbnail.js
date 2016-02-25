@@ -70,7 +70,7 @@ Thumbnail.prototype.drawPreview = function (levelIndex, isComplete) {
 
     if (isComplete) {
         this.border = '2px limegreen';
-    } else if (Arcadia.isLocked() && levelIndex >= 15) {
+    } else if (Arcadia.isLocked() && levelIndex >= Arcadia.freeLevels) {
         this.border = '2px crimson';
     } else {
         this.border = '2px white';

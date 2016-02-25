@@ -4,6 +4,8 @@
 var RulesScene = function () {
     Arcadia.Scene.apply(this);
 
+    Arcadia.cycleBackground();
+
     var titleLabel,
         backButton,
         detailLabel,
@@ -56,7 +58,7 @@ var RulesScene = function () {
 
     detailLabel = new Arcadia.Label({
         text: text.join(''),
-        alignment: 'left',
+        // alignment: 'left',
         font: '24px monospace',
         position: {
             x: 0,

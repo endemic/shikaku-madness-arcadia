@@ -8,19 +8,16 @@ var GameScene = function (options) {
 
     Arcadia.cycleBackground();
 
-    this.tutorial = !!options.tutorial;
-    this.tutorialStep = 1;
     this.level = options.level || 0;
+    this.levelData = LEVELS[this.level];
+
+    this.showTutorial = TUTORIALS[this.level] !== undefined;
+    this.tutorialStep = 0;
+
     this.ignoreInput = false;
     this.timer = 0;
     this.verticalPadding = 77;
     this.drawUi();
-
-    if (this.tutorial) {
-        this.levelData = TUTORIAL;
-    } else {
-        this.levelData = LEVELS[this.level];
-    }
 
     // Puzzle grid
     this.grid = new Grid({
@@ -38,19 +35,12 @@ var GameScene = function (options) {
 
     // Squares
     this.squares = [];
-
     this.activeSquare = new Square({
         alpha: 0
     });
     this.add(this.activeSquare);
 
-    this.hintSquare = new Square({
-        alpha: 0
-    });
-    this.add(this.hintSquare);
-
-    if (this.tutorial) {
-        this.activate(this.tutorialLabelBackground);
+    if (this.showTutorial) {
         this.displayTutorial();
     }
 };
@@ -84,35 +74,13 @@ GameScene.prototype.update = function (delta) {
     // TODO break this out into two labels, to prevent text jumping
     this.timerLabel.text = 'Time\n' + minutes + ':' + seconds;
 
-    if (this.tutorial) {
-        var position,
-            area,
-            success;
+    if (this.showTutorial) {
+        var square = TUTORIALS[this.level].squares[this.tutorialStep];
 
-        // check for placement of player squares over the hints
-        switch (this.tutorialStep) {
-            case 1:
-                position = { x: 37, y: 33 };
-                area = 9;
-                break;
-            case 2:
-                position = { x: 37, y: 126 };
-                area = 6;
-                break;
-            case 3:
-                position = { x: -56, y: 126 };
-                area = 4;
-                break;
-            case 4:
-                position = { x: -56, y: 33 };
-                area = 6;
-                break;
-        }
-
-        success = this.squares.find(function (square) {
-            return Math.round(square.position.x) === position.x &&
-                    Math.round(square.position.y) === position.y &&
-                    square.area === area;
+        var success = this.squares.find(function (s) {
+            return Math.round(s.position.x) === square.position.x &&
+                    Math.round(s.position.y) === square.position.y &&
+                    s.area === square.area;
         });
 
         if (success) {
@@ -123,43 +91,15 @@ GameScene.prototype.update = function (delta) {
 };
 
 GameScene.prototype.displayTutorial = function () {
-    var text,
-        action;
+    this.tutorialLabel.text = TUTORIALS[this.level].text[this.tutorialStep] || '';
 
-    action = Arcadia.ENV.mobile ? 'Tap' : 'Click';
-
-    text = [
-        'intentionally left blank',
-        action + ' and drag to\ndraw a rectangle on\ntop of each number.',
-        'Each number\nequals the area\nof its rectangle.',
-        'Rectangles cover\nonly one number.',
-        'Rectangles\ncan\'t overlap!'
-    ];
-
-    this.hintSquare.alpha = 0.5;
-
-    this.tutorialLabel.text = text[this.tutorialStep];
-
-    switch (this.tutorialStep) {
-        case 1:
-            this.hintSquare.position = { x: 36.5, y: 33.5 };
-            this.hintSquare.size = { width: 109.5, height: 109.5 };
-            break;
-        case 2:
-            this.hintSquare.position = { x: 36.5, y: 124.75 };
-            this.hintSquare.size = { width: 109.5, height: 73 };
-            break;
-        case 3:
-            this.hintSquare.position = { x: -54.75, y: 124.75 };
-            this.hintSquare.size = { width: 73, height: 73 };
-            break;
-        case 4:
-            this.hintSquare.position = { x: -54.75, y: 33.5 };
-            this.hintSquare.size = { width: 73, height: 109.5 };
-            break;
-        default:
-            this.hintSquare.alpha = 0;
-            break;
+    var hintInfo = TUTORIALS[this.level].hints[this.tutorialStep];
+    if (hintInfo) {
+        this.hint.alpha = 0.5;
+        this.hint.position = hintInfo.position;
+        this.hint.size = hintInfo.size;
+    } else {
+        this.hint.alpha = 0;
     }
 };
 
@@ -371,20 +311,31 @@ GameScene.prototype.check = function () {
 };
 
 GameScene.prototype.win = function () {
-    alert('u solved the puzzle, bro');
+    var completed;
+    var incompleteLevel;
 
-    var completed = localStorage.getObject('completed')
-    if (completed === null) {
-        completed = [];
-        while (completed.length < LEVELS.length) {
-            completed.push(null);
-        }
-    }
+    completed = localStorage.getObject('completed') || new Array(LEVELS.length);
     completed[this.level] = true;
     localStorage.setObject('completed', completed);
+    incompleteLevel = completed.indexOf(null);
 
-    sona.play('win');
-    Arcadia.changeScene(LevelSelectScene);
+    window.setTimeout(function () {
+        sona.play('win');
+
+        if (window.confirm('Success! Next puzzle?')) {
+            sona.play('button');
+
+            if (incompleteLevel === -1) {
+                Arcadia.changeScene(LevelSelectScene);
+            } else if (Arcadia.isLocked() && incompleteLevel >= Arcadia.freeLevels) {
+                Arcadia.changeScene(UnlockScene);
+            } else {
+                Arcadia.changeScene(GameScene, { level: incompleteLevel });
+            }
+        } else {
+            Arcadia.changeScene(LevelSelectScene);
+        }
+    }, 1000);
 };
 
 GameScene.prototype.drawClues = function () {
@@ -503,7 +454,7 @@ GameScene.prototype.drawUi = function () {
     });
     timerLabelBackground.add(this.timerLabel);
 
-    if (this.tutorial) {
+    if (this.showTutorial) {
         this.tutorialLabelBackground = new Arcadia.Shape({
             color: null,
             border: '2px white',
@@ -518,5 +469,10 @@ GameScene.prototype.drawUi = function () {
             font: '20px monospace'
         });
         this.tutorialLabelBackground.add(this.tutorialLabel);
+
+        this.hint = new Square({
+            alpha: 0
+        });
+        this.add(this.hint);
     }
 };
