@@ -58,6 +58,10 @@
             });
 
             UnlockScene.initializeStore();
+
+            if (navigator.splashscreen) {
+              navigator.splashscreen.hide();
+            }
         });
   		}
   	</script>

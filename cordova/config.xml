@@ -19,6 +19,12 @@
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
+
+    <preference name="AutoHideSplashScreen" value="false" />
+    <preference name="FadeSplashScreen" value="false" />
+    <preference name="SplashScreenDelay" value="0" />
+    <preference name="ShowSplashScreenSpinner" value="false"/>
+
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
@@ -63,11 +69,4 @@
         <splash src="resources/ios/Default-736h.png" width="1242" height="2208"/>
         <splash src="resources/ios/Default-Landscape-736h.png" width="2208" height="1242"/>
     </platform>
-
-    <!-- Splashscreen plugin -->
-    <!-- https://github.com/apache/cordova-plugin-splashscreen -->
-    <!-- These config options don't produce a noticeable change -->
-    <preference name="SplashScreenDelay" value="2000" />
-    <preference name="FadeSplashScreenDuration" value="2"/>
-    <preference name="ShowSplashScreenSpinner" value="false"/>
 </widget>
