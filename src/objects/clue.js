@@ -1,23 +1,34 @@
-var Clue = function (args) {
-    Arcadia.Shape.apply(this, arguments);
+/*jslint this: true, browser: true */
+/*global Arcadia, window */
 
-    this.size = { width: Clue.SIZE, height: Clue.SIZE };
-    this.vertices = 0;
-    this.color = null;
-    this.border = '2px white';
-    this.number = 0;
+(function (root) {
+    'use strict';
 
-    if (args.hasOwnProperty('number')) {
-        this.number = args.number;
-    }
+    var Clue;
 
-    this.label = new Arcadia.Label({
-        font: '24px monospace',
-        text: this.number
-    });
-    this.add(this.label);
-};
+    Clue = function (args) {
+        Arcadia.Shape.apply(this, arguments);
 
-Clue.prototype = new Arcadia.Shape();
+        this.size = {width: Clue.SIZE, height: Clue.SIZE};
+        this.vertices = 0;
+        this.color = null;
+        this.border = '2px white';
+        this.number = 0;
 
-Clue.SIZE = 33; // 375 / 10 = 37.5
+        if (args.hasOwnProperty('number')) {
+            this.number = args.number;
+        }
+
+        this.label = new Arcadia.Label({
+            font: '24px monospace',
+            text: this.number
+        });
+        this.add(this.label);
+    };
+
+    Clue.prototype = new Arcadia.Shape();
+
+    Clue.SIZE = 33; // 375 / 10 = 37.5
+
+    root.Clue = Clue;
+}(window));

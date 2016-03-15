@@ -22,7 +22,7 @@ var CreditsScene = function () {
     description = new Arcadia.Label({
         position: {x: 0, y: 33},
         font: '20px monospace',
-        text: 'Programming by Nathan Demick\nPuzzle concept by Nikoli\n(c) 2016 Ganbaru Games\nhttp://ganbarugames.com'
+        text: 'Programming by Nathan Demick\nPuzzle concept by Nikoli\n(c) 2011-2016 Ganbaru Games\nhttps://ganbarugames.com'
     });
     this.add(description);
 

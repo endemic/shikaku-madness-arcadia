@@ -1,8 +1,12 @@
+/*jslint this: true, browser: true */
+
 (function () {
+    'use strict';
+
     Storage.namespace = 'shikaku';
 
-    var originalGetItem = Storage.prototype.getItem,
-        originalSetItem = Storage.prototype.setItem;
+    var originalGetItem = Storage.prototype.getItem;
+    var originalSetItem = Storage.prototype.setItem;
 
     Storage.prototype.setItem = function (key, value) {
         key = this.namespace(key);
@@ -37,6 +41,6 @@
     };
 
     Storage.prototype.getBoolean = function (key) {
-        return this.getItem(key) == 'true';
+        return this.getItem(key) === 'true';
     };
-})();
+}());

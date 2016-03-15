@@ -58,8 +58,8 @@ gulp.task('web', ['concat', 'compress'], function () {
         .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku'));
 
     // Copy appcache/webapp manifests
-    gulp.src(['dist/manifest.appcache'], { base: 'dist' })
-        .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku'));
+    // gulp.src(['dist/manifest.appcache'], { base: 'dist' })
+    //     .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku'));
 
     gulp.src(['manifest.json'])
         .pipe(gulp.dest('../../websites/ganbarugames.com/shikaku'));

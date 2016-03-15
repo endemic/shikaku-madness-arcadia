@@ -1,84 +1,82 @@
-/*jslint sloppy: true */
-/*globals Arcadia, LevelSelectScene, localStorage, sona */
+/*jslint this, browser */
+/*global Arcadia, window, LEVELS, RulesScene, LevelSelectScene, UnlockScene, GameScene */
 
-var TitleScene = function () {
-    Arcadia.Scene.apply(this);
+(function (root) {
+    'use strict';
 
-    Arcadia.cycleBackground();
+    var TitleScene = function () {
+        Arcadia.Scene.apply(this);
 
-    var titleLabel,
-        playButton,
-        tutorialButton,
-        rulesButton,
-        editorButton,
-        padding = 10;
+        Arcadia.cycleBackground();
 
-    titleLabel = new Arcadia.Label({
-        text: 'Shikaku\nMadness',
-        font: '64px monospace',
-        position: {
-            x: 0,
-            y: -100
-        }
-    });
+        var BUTTON_MARGIN = 10;
 
-    this.add(titleLabel);
+        var titleLabel = new Arcadia.Label({
+            text: 'Shikaku\nMadness',
+            font: '64px monospace',
+            position: {x: 0, y: -100}
+        });
 
-    playButton = new Arcadia.Button({
-        position: { x: 0, y: 80 },
-        size: { width: 180, height: 50 },
-        color: null,
-        border: '2px white',
-        text: 'play',
-        font: '36px monospace',
-        action: function () {
-            sona.play('button');
-            Arcadia.changeScene(LevelSelectScene);
-        }
-    });
-    this.add(playButton);
+        this.add(titleLabel);
 
-    // tutorialButton = new Arcadia.Button({
-    //     position: { x: 0, y: playButton.position.y + playButton.size.height + padding },
-    //     size: { width: 180, height: 50 },
-    //     color: null,
-    //     border: '2px white',
-    //     text: 'tutorial',
-    //     font: '36px monospace',
-    //     action: function () {
-    //         sona.play('button');
-    //         Arcadia.changeScene(GameScene, { tutorial: true });
-    //     }
-    // });
-    // this.add(tutorialButton);
+        var playButton = new Arcadia.Button({
+            position: {x: 0, y: 80},
+            size: {width: 180, height: 50},
+            color: null,
+            border: '2px white',
+            text: 'play',
+            font: '36px monospace',
+            action: function () {
+                window.sona.play('button');
 
-    rulesButton = new Arcadia.Button({
-        position: { x: 0, y: playButton.position.y + playButton.size.height + padding },
-        size: { width: 180, height: 50 },
-        color: null,
-        border: '2px white',
-        text: 'rules',
-        font: '36px monospace',
-        action: function () {
-            sona.play('button');
-            Arcadia.changeScene(RulesScene);
-        }
-    });
-    this.add(rulesButton);
+                var completedLevels = localStorage.getObject('completedLevels') || [];
+                while (completedLevels.length < LEVELS.length) {
+                    completedLevels.push(null);
+                }
+                var incompleteLevel = completedLevels.indexOf(null);
 
-    // editorButton = new Arcadia.Button({
-    //     position: { x: 0, y: rulesButton.position.y + rulesButton.size.height + padding },
-    //     size: { width: 180, height: 50 },
-    //     color: null,
-    //     border: '2px white',
-    //     text: 'editor',
-    //     font: '36px monospace',
-    //     action: function () {
-    //         sona.play('button');
-    //         Arcadia.changeScene(EditorScene);
-    //     }
-    // });
-    // this.add(editorButton);
-};
+                // TOOO: Extract this code from here & game scene
+                if (incompleteLevel === -1) {
+                    Arcadia.changeScene(LevelSelectScene);
+                } else if (Arcadia.isLocked() && incompleteLevel >= Arcadia.FREE_LEVEL_COUNT) {
+                    Arcadia.changeScene(UnlockScene);
+                } else {
+                    Arcadia.changeScene(GameScene, {level: incompleteLevel});
+                }
+            }
+        });
+        this.add(playButton);
 
-TitleScene.prototype = new Arcadia.Scene();
+        var rulesButton = new Arcadia.Button({
+            position: {x: 0, y: playButton.position.y + playButton.size.height + BUTTON_MARGIN},
+            size: {width: 180, height: 50},
+            color: null,
+            border: '2px white',
+            text: 'rules',
+            font: '36px monospace',
+            action: function () {
+                window.sona.play('button');
+                Arcadia.changeScene(RulesScene);
+            }
+        });
+        this.add(rulesButton);
+
+        // var editorButton = new Arcadia.Button({
+        //     position: { x: 0, y: rulesButton.position.y + rulesButton.size.height + BUTTON_MARGIN },
+        //     size: { width: 180, height: 50 },
+        //     color: null,
+        //     border: '2px white',
+        //     text: 'editor',
+        //     font: '36px monospace',
+        //     action: function () {
+        //         window.sona.play('button');
+        //         Arcadia.changeScene(EditorScene);
+        //     }
+        // });
+        // this.add(editorButton);
+    };
+
+    TitleScene.prototype = new Arcadia.Scene();
+
+    root.TitleScene = TitleScene;
+}(window));

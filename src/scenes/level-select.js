@@ -15,7 +15,10 @@ var LevelSelectScene = function (options) {
     this.perPage = 9;
     this.totalPages = Math.ceil(LEVELS.length / this.perPage);
     this.currentPage = Math.floor(this.selectedLevel / this.perPage);
-    this.completed = localStorage.getObject('completed') || Array(LEVELS.length);
+    this.completedLevels = localStorage.getObject('completedLevels') || [];
+    while (this.completedLevels.length < LEVELS.length) {
+        this.completedLevels.push(null);
+    }
 
     this.drawUi();
     this.updatePageLabel();
@@ -48,7 +51,7 @@ var LevelSelectScene = function (options) {
                 }
             });
 
-            thumbnail.drawPreview(index, self.completed[index]);
+            thumbnail.drawPreview(index, self.completedLevels[index]);
 
             self.add(thumbnail);
             page.push(thumbnail);
@@ -118,7 +121,7 @@ LevelSelectScene.prototype.next = function () {
             };
 
             levelIndex = self.currentPage * self.perPage + index;
-            shape.drawPreview(levelIndex, self.completed[levelIndex]);
+            shape.drawPreview(levelIndex, self.completedLevels[levelIndex]);
 
             delay = Math.floor(index / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 
@@ -185,7 +188,7 @@ LevelSelectScene.prototype.previous = function () {
             };
 
             levelIndex = self.currentPage * self.perPage + index;
-            shape.drawPreview(levelIndex, self.completed[levelIndex]);
+            shape.drawPreview(levelIndex, self.completedLevels[levelIndex]);
 
             delay = Math.floor((self.perPage - index - 1) / 3) * LevelSelectScene.TRANSITION_DELAY + 100;
 
@@ -220,7 +223,7 @@ LevelSelectScene.prototype.updatePageLabel = function () {
     this.pageLabel.text = 'Page ' + (this.currentPage + 1) + ' of ' + this.totalPages;
     this.puzzleLabel.text = 'Puzzle #' + (this.selectedLevel + 1);
     this.difficultyLabel.text = 'Difficulty: ' + LEVELS[this.selectedLevel].difficulty;
-    this.completedLabel.text = 'Completed? ' + (this.completed[this.selectedLevel] ? '✓' : '✗');
+    this.completedLabel.text = 'Completed? ' + (this.completedLevels[this.selectedLevel] ? '✓' : '✗');
 };
 
 LevelSelectScene.prototype.onPointEnd = function (points) {

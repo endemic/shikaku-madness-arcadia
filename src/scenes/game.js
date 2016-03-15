@@ -14,9 +14,8 @@ var GameScene = function (options) {
     this.showTutorial = TUTORIALS[this.level] !== undefined;
     this.tutorialStep = 0;
 
-    this.ignoreInput = false;
     this.timer = 0;
-    this.verticalPadding = 77;
+    this.VERTICAL_PADDING = 77;
     this.drawUi();
 
     // Puzzle grid
@@ -24,7 +23,7 @@ var GameScene = function (options) {
         size: this.levelData.size,
         position: {
             x: 0,
-            y: this.size.height / 2 - Grid.MAX_SIZE / 2 - this.verticalPadding
+            y: this.size.height / 2 - Grid.MAX_SIZE / 2 - this.VERTICAL_PADDING
         }
     });
     this.add(this.grid);
@@ -106,10 +105,6 @@ GameScene.prototype.displayTutorial = function () {
 GameScene.prototype.onPointStart = function (points) {
     var values, row, column, self;
 
-    if (this.ignoreInput) {
-        return;
-    }
-
     self = this;
     values = this.grid.getRowAndColumn(points[0]);
     row = values[0];
@@ -147,10 +142,6 @@ GameScene.prototype.onPointStart = function (points) {
 
 GameScene.prototype.onPointMove = function (points) {
     var values, row, column, width, height;
-
-    if (this.ignoreInput) {
-        return;
-    }
 
     if (this.startRow === null || this.startColumn === null) {
         return;
@@ -311,13 +302,14 @@ GameScene.prototype.check = function () {
 };
 
 GameScene.prototype.win = function () {
-    var completed;
-    var incompleteLevel;
+    completedLevels = localStorage.getObject('completedLevels') || [];
+    while (this.completedLevels.length < LEVELS.length) {
+        completedLevels.push(null);
+    }
+    completedLevels[this.level] = true;
+    localStorage.setObject('completedLevels', completedLevels);
 
-    completed = localStorage.getObject('completed') || new Array(LEVELS.length);
-    completed[this.level] = true;
-    localStorage.setObject('completed', completed);
-    incompleteLevel = completed.indexOf(null);
+    var incompleteLevel = completedLevels.indexOf(null);
 
     window.setTimeout(function () {
         sona.play('win');
@@ -342,16 +334,16 @@ GameScene.prototype.drawClues = function () {
     var self = this;
 
     this.levelData.clues.forEach(function (clue) {
-        var clueLabel,
-            x = clue[0],
-            y = clue[1],
-            value = clue[2];
+        var x = clue[0];
+        var y = clue[1];
+        var value = clue[2];
+        var CLUE_OFFSET = 2;
 
-        clueLabel = new Clue({
+        var clueLabel = new Clue({
             number: value,
             position: {
-                x: self.grid.bounds.left + (x * self.grid.cellSize) + Clue.SIZE / 2 + 2, // TODO: get rid of these magic numbers
-                y: self.grid.bounds.top + (y * self.grid.cellSize) + Clue.SIZE / 2 + 2
+                x: self.grid.bounds.left + (x * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET,
+                y: self.grid.bounds.top + (y * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET
             }
         });
         self.add(clueLabel);
@@ -387,7 +379,7 @@ GameScene.prototype.drawUi = function () {
     });
     quitButton.position =  {
         x: quitButton.size.width / 2 + padding,
-        y: -this.size.height / 2 + quitButton.size.height / 2 + this.verticalPadding
+        y: -this.size.height / 2 + quitButton.size.height / 2 + this.VERTICAL_PADDING
     };
     this.add(quitButton);
 
@@ -414,7 +406,7 @@ GameScene.prototype.drawUi = function () {
     });
     resetButton.position =  {
         x: -resetButton.size.width / 2 - padding,
-        y: -this.size.height / 2 + resetButton.size.height / 2 + this.verticalPadding
+        y: -this.size.height / 2 + resetButton.size.height / 2 + this.VERTICAL_PADDING
     };
     this.add(resetButton);
 

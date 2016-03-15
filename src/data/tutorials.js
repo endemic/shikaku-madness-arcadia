@@ -1,11 +1,7 @@
-var action;
-var actionGerund;
-var TUTORIALS;
+var action = Arcadia.ENV.mobile ? 'tap' : 'click';
+var actionGerund = Arcadia.ENV.mobile ? 'tapping' : 'clicking';
 
-action = Arcadia.ENV.mobile ? 'tap' : 'click';
-actionGerund = Arcadia.ENV.mobile ? 'tapping' : 'clicking';
-
-TUTORIALS = [
+var TUTORIALS = [
     {
         // squares that need placed
         squares: [

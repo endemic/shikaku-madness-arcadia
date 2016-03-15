@@ -1,9 +1,15 @@
 # TODO
 
 [ ] Add "reset data" option to credits view
+[ ] Add "complete" window/effect w/ buttons
+	* Remove grid
+	* Show "complete" box w/ a "next" button
+[ ] Add 9 more 5x5 level
+[ ] Create 2 more tutorial levels
 [ ] Create basic level editor
-	[ ] Add 15 or so "beginner" levels
-[ ] Extract tutorial config to allow for hints on more puzzles
+[ ] Run source through JSLint
+[x] Remove GameScene.ignoreInput
+[x] Extract tutorial config to allow for hints on more puzzles
 
 [x] Copy appcache and webapp manifests to web target
 [x] Add a "rules" scene
