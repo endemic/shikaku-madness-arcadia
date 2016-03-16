@@ -8,6 +8,8 @@
 [ ] Create 2 more tutorial levels
 [ ] Create basic level editor
 [ ] Run source through JSLint
+[ ] Create visual effect for removing squares
+	- scale up + fade
 [x] Remove GameScene.ignoreInput
 [x] Extract tutorial config to allow for hints on more puzzles
 
@@ -19,16 +21,6 @@
 		move it to above of the thumbnails
 	[x] Add a "Completed?" label
 	[x] Make completed puzzle thumbnails have a different colored border/background
-
-# Bugs
-
-[x] When instantiating on the first page of level select, user can't go to
-    previous pages
-
-# Future
-
-[ ] Create visual effect for removing squares
-	- scale up + fade
 
 -------------------
 

@@ -1,470 +1,452 @@
-/*jslint sloppy: true */
-/*globals Arcadia, window, console, localStorage, sona */
+/*jslint this, browser */
+/*global window, Arcadia, sona, LEVELS, TUTORIALS, Grid, Square, Clue,
+LevelSelectScene, UnlockScene */
 
-var GameScene = function (options) {
-    Arcadia.Scene.apply(this, arguments);
+(function (root) {
+    'use strict';
 
-    options = options || {};
+    var GameScene = function (options) {
+        Arcadia.Scene.apply(this, arguments);
 
-    Arcadia.cycleBackground();
+        options = options || {};
 
-    this.level = options.level || 0;
-    this.levelData = LEVELS[this.level];
+        Arcadia.cycleBackground();
 
-    this.showTutorial = TUTORIALS[this.level] !== undefined;
-    this.tutorialStep = 0;
+        this.level = options.level || 0;
+        this.levelData = LEVELS[this.level];
 
-    this.timer = 0;
-    this.VERTICAL_PADDING = 77;
-    this.drawUi();
+        this.showTutorial = TUTORIALS[this.level] !== undefined;
+        this.tutorialStep = 0;
 
-    // Puzzle grid
-    this.grid = new Grid({
-        size: this.levelData.size,
-        position: {
-            x: 0,
-            y: this.size.height / 2 - Grid.MAX_SIZE / 2 - this.VERTICAL_PADDING
-        }
-    });
-    this.add(this.grid);
+        this.timer = 0;
+        this.VERTICAL_PADDING = 77;
+        this.drawUi();
 
-    // Clues
-    this.clues = [];
-    this.drawClues();
-
-    // Squares
-    this.squares = [];
-    this.activeSquare = new Square({
-        alpha: 0
-    });
-    this.add(this.activeSquare);
-
-    if (this.showTutorial) {
-        this.displayTutorial();
-    }
-};
-
-GameScene.prototype = new Arcadia.Scene();
-
-GameScene.prototype.update = function (delta) {
-    Arcadia.Scene.prototype.update.call(this, delta);
-
-    this.timer += delta;
-
-    var minutes,
-        seconds,
-        zeroPad,
-        self = this;
-
-    zeroPad = function (string, length) {
-        string = String(string);
-        length = parseInt(length, 10);
-
-        while (string.length < length) {
-            string = '0' + string;
-        }
-
-        return string;
-    };
-
-    minutes = zeroPad(Math.round(this.timer / 60), 2);
-    seconds = zeroPad(Math.round(this.timer % 60), 2);
-
-    // TODO break this out into two labels, to prevent text jumping
-    this.timerLabel.text = 'Time\n' + minutes + ':' + seconds;
-
-    if (this.showTutorial) {
-        var square = TUTORIALS[this.level].squares[this.tutorialStep];
-
-        var success = this.squares.find(function (s) {
-            return Math.round(s.position.x) === square.position.x &&
-                    Math.round(s.position.y) === square.position.y &&
-                    s.area === square.area;
+        // Puzzle grid
+        this.grid = new Grid({
+            size: this.levelData.size,
+            position: {
+                x: 0,
+                y: this.size.height / 2 - Grid.MAX_SIZE / 2 - this.VERTICAL_PADDING
+            }
         });
+        this.add(this.grid);
 
-        if (success) {
-            this.tutorialStep += 1;
+        // Clues
+        this.clues = [];
+        this.drawClues();
+
+        // Squares
+        this.squares = [];
+        this.activeSquare = new Square({
+            alpha: 0
+        });
+        this.add(this.activeSquare);
+
+        if (this.showTutorial) {
             this.displayTutorial();
         }
-    }
-};
-
-GameScene.prototype.displayTutorial = function () {
-    this.tutorialLabel.text = TUTORIALS[this.level].text[this.tutorialStep] || '';
-
-    var hintInfo = TUTORIALS[this.level].hints[this.tutorialStep];
-    if (hintInfo) {
-        this.hint.alpha = 0.5;
-        this.hint.position = hintInfo.position;
-        this.hint.size = hintInfo.size;
-    } else {
-        this.hint.alpha = 0;
-    }
-};
-
-GameScene.prototype.onPointStart = function (points) {
-    var values, row, column, self;
-
-    self = this;
-    values = this.grid.getRowAndColumn(points[0]);
-    row = values[0];
-    column = values[1];
-
-    if (row === null || column === null) {
-        return;
-    }
-
-    this.startPoint = points[0];
-    this.startRow = this.previousRow = row;
-    this.startColumn = this.previousColumn = column;
-
-    this.activeSquare.position = {
-        x: this.grid.bounds.left + column * this.grid.cellSize + this.grid.cellSize / 2,
-        y: this.grid.bounds.top + row * this.grid.cellSize + this.grid.cellSize / 2
     };
 
-    // Make slightly smaller; was causing erroneous collisions
-    this.activeSquare.size = {
-        width: this.grid.cellSize - 1,
-        height: this.grid.cellSize - 1
-    };
+    GameScene.prototype = new Arcadia.Scene();
 
-    // Determine if the square collides with another;
-    // if so, delete the old one
-    this.squares.forEach(function (square, index) {
-        if (self.activeSquare.collidesWith(square)) {
-            self.remove(square);
-            self.squares.splice(index, 1);
-            sona.play('erase');
-        }
-    });
-};
+    GameScene.prototype.update = function (delta) {
+        Arcadia.Scene.prototype.update.call(this, delta);
 
-GameScene.prototype.onPointMove = function (points) {
-    var values, row, column, width, height;
+        this.timer += delta;
 
-    if (this.startRow === null || this.startColumn === null) {
-        return;
-    }
+        var zeroPad = function (string, length) {
+            string = String(string);
+            length = parseInt(length, 10);
 
-    values = this.grid.getRowAndColumn(points[0]);
-    row = values[0];
-    column = values[1];
-
-    if (row === null || column === null) {
-        return;
-    }
-
-    // This allows a single click/tap to remove squares
-    // Player has to move input at least 5px to start drawing a new one
-    if (Arcadia.distance(points[0], this.startPoint) > 5 && this.activeSquare.alpha === 0) {
-        this.activeSquare.alpha = 1;
-        this.areaLabel.text = 'Area\n1';
-        sona.play('move');
-    }
-
-    width = Math.abs(this.startColumn - column) + 1;
-    height = Math.abs(this.startRow - row) + 1;
-
-    // Set position
-    this.activeSquare.position = {
-        x: this.grid.bounds.left + ((width / 2 + this.startColumn) * this.grid.cellSize),
-        y: this.grid.bounds.top + ((height / 2 + this.startRow) * this.grid.cellSize)
-    };
-
-    // Change size if necessary
-    if (row !== this.previousRow) {
-        this.activeSquare.size = {
-            width: this.activeSquare.size.width,
-            height: height * this.grid.cellSize
-        };
-    }
-
-    // Offset position if necessary
-    if (row < this.startRow) {
-        this.activeSquare.position = {
-            x: this.activeSquare.position.x,
-            y: this.activeSquare.position.y - ((this.startRow - row) * this.grid.cellSize)
-        };
-    }
-
-    // Change size if necessary
-    if (column !== this.previousColumn) {
-        this.activeSquare.size = {
-            width: width * this.grid.cellSize,
-            height: this.activeSquare.size.height
-        };
-    }
-
-    // Offset position if necessary
-    if (column < this.startColumn) {
-        this.activeSquare.position = {
-            x: this.activeSquare.position.x - ((this.startColumn - column) * this.grid.cellSize),
-            y: this.activeSquare.position.y
-        };
-    }
-
-    if (row !== this.previousRow || column !== this.previousColumn) {
-        this.areaLabel.text = 'Area\n' + (width * height);
-        sona.play('move');
-    }
-
-    this.previousRow = row;
-    this.previousColumn = column;
-};
-
-GameScene.prototype.onPointEnd = function (points) {
-    var width,
-        height,
-        area,
-        dupe;
-
-    if (this.activeSquare.alpha === 1) {
-        width = Math.abs(this.startColumn - this.previousColumn) + 1;
-        height = Math.abs(this.startRow - this.previousRow) + 1;
-        area = width * height;
-
-        // Dupe the activeSquare
-        dupe = new Square({
-            position: {
-                x: this.activeSquare.position.x,
-                y: this.activeSquare.position.y
-            },
-            size: {
-                width: this.activeSquare.size.width,
-                height: this.activeSquare.size.height
-            },
-            area: area  // non-standard prop
-        });
-
-        this.add(dupe);
-        this.squares.push(dupe);
-
-        dupe.tween('scale', 1.1, 50, 'linearNone', function () {
-            dupe.tween('scale', 1, 100);
-        });
-
-        sona.play('place');
-
-        // TODO ?
-        // Check if square overlaps a clue
-        // If square overlaps a single clue, check if the area matches the clue
-        // If area matches the single clue, give the square a different color
-
-        // Reset the activeSquare
-        this.activeSquare.alpha = 0;
-    }
-
-    // Check if player has won
-    if (this.check()) {
-        this.win();
-    }
-
-    // Clear out previous data
-    this.startRow = this.previousRow = null;
-    this.startColumn = this.previousColumn = null;
-    this.areaLabel.text = 'Area\n--';
-};
-
-GameScene.prototype.check = function () {
-    var square, clue, self;
-
-    self = this;
-
-    if (this.squares.length != this.clues.length) {
-        console.log('Square count doesn\'t match clue count');
-        return false;
-    }
-
-    var success = true;
-
-    this.squares.forEach(function (square) {
-        var collisionCount = 0;
-        var validClue = null;
-
-        self.clues.forEach(function (clue) {
-            if (clue.collidesWith(square)) {
-                validClue = clue;
-                collisionCount += 1;
+            while (string.length < length) {
+                string = '0' + string;
             }
-        });
 
-        if (collisionCount > 1 || collisionCount === 0) {
-            console.log("Failing because a clue has either no squares covering it, or multiple squares covering it");
-            success = false;
-        } else if (validClue.number !== square.area) {
-            console.log("Clue (" + validClue.number + ") and Square area (" + square.area  + ") don't match!");
-            success = false;
-        }
-    });
+            return string;
+        };
 
-    return success;
-};
+        var minutes = zeroPad(Math.round(this.timer / 60), 2);
+        var seconds = zeroPad(Math.round(this.timer % 60), 2);
 
-GameScene.prototype.win = function () {
-    completedLevels = localStorage.getObject('completedLevels') || [];
-    while (this.completedLevels.length < LEVELS.length) {
-        completedLevels.push(null);
-    }
-    completedLevels[this.level] = true;
-    localStorage.setObject('completedLevels', completedLevels);
+        this.timerLabel.text = 'Time\n' + minutes + ':' + seconds;
 
-    var incompleteLevel = completedLevels.indexOf(null);
+        if (this.showTutorial) {
+            var square = TUTORIALS[this.level].squares[this.tutorialStep];
 
-    window.setTimeout(function () {
-        sona.play('win');
+            var success = this.squares.find(function (s) {
+                return Math.round(s.position.x) === square.position.x &&
+                        Math.round(s.position.y) === square.position.y &&
+                        s.area === square.area;
+            });
 
-        if (window.confirm('Success! Next puzzle?')) {
-            sona.play('button');
-
-            if (incompleteLevel === -1) {
-                Arcadia.changeScene(LevelSelectScene);
-            } else if (Arcadia.isLocked() && incompleteLevel >= Arcadia.freeLevels) {
-                Arcadia.changeScene(UnlockScene);
-            } else {
-                Arcadia.changeScene(GameScene, { level: incompleteLevel });
+            if (success) {
+                this.tutorialStep += 1;
+                this.displayTutorial();
             }
+        }
+    };
+
+    GameScene.prototype.displayTutorial = function () {
+        this.tutorialLabel.text = TUTORIALS[this.level].text[this.tutorialStep] || '';
+
+        var hintInfo = TUTORIALS[this.level].hints[this.tutorialStep];
+        if (hintInfo) {
+            this.hint.alpha = 0.5;
+            this.hint.position = hintInfo.position;
+            this.hint.size = hintInfo.size;
         } else {
-            Arcadia.changeScene(LevelSelectScene);
+            this.hint.alpha = 0;
         }
-    }, 1000);
-};
+    };
 
-GameScene.prototype.drawClues = function () {
-    var self = this;
+    GameScene.prototype.onPointStart = function (points) {
+        var self = this;
+        var values = this.grid.getRowAndColumn(points[0]);
+        var row = values[0];
+        var column = values[1];
 
-    this.levelData.clues.forEach(function (clue) {
-        var x = clue[0];
-        var y = clue[1];
-        var value = clue[2];
-        var CLUE_OFFSET = 2;
+        if (row === null || column === null) {
+            return;
+        }
 
-        var clueLabel = new Clue({
-            number: value,
-            position: {
-                x: self.grid.bounds.left + (x * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET,
-                y: self.grid.bounds.top + (y * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET
+        this.startPoint = points[0];
+        this.startRow = row;
+        this.previousRow = row;
+        this.startColumn = column;
+        this.previousColumn = column;
+
+        this.activeSquare.position = {
+            x: this.grid.bounds.left + column * this.grid.cellSize + this.grid.cellSize / 2,
+            y: this.grid.bounds.top + row * this.grid.cellSize + this.grid.cellSize / 2
+        };
+
+        // Make slightly smaller; was causing erroneous collisions
+        this.activeSquare.size = {
+            width: this.grid.cellSize - 1,
+            height: this.grid.cellSize - 1
+        };
+
+        // Determine if the square collides with another;
+        // if so, delete the old one
+        this.squares.forEach(function (square, index) {
+            if (self.activeSquare.collidesWith(square)) {
+                self.remove(square);
+                self.squares.splice(index, 1);
+                sona.play('erase');
             }
         });
-        self.add(clueLabel);
-        self.clues.push(clueLabel);
-    });
-};
+    };
 
-GameScene.prototype.drawUi = function () {
-    var areaLabelBackground,
-        timerLabelBackground,
-        quitButton,
-        resetButton,
-        padding = 5,
-        self = this;
+    GameScene.prototype.onPointMove = function (points) {
+        if (this.startRow === null || this.startColumn === null) {
+            return;
+        }
 
-    quitButton = new Arcadia.Button({
-        color: null,
-        border: '2px white',
-        label: new Arcadia.Label({
-            color: 'white',
-            text: 'quit',
-            font: '20px monospace'   // TODO button throws exception w/o a font arg
-        }),
-        size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
-        action: function () {
-            sona.play('button');
+        var values = this.grid.getRowAndColumn(points[0]);
+        var row = values[0];
+        var column = values[1];
 
-            if (confirm('Quit?')) {
+        if (row === null || column === null) {
+            return;
+        }
+
+        // This allows a single click/tap to remove squares
+        // Player has to move input at least 5px to start drawing a new one
+        if (Arcadia.distance(points[0], this.startPoint) > 5 && this.activeSquare.alpha === 0) {
+            this.activeSquare.alpha = 1;
+            this.areaLabel.text = 'Area\n1';
+            sona.play('move');
+        }
+
+        var width = Math.abs(this.startColumn - column) + 1;
+        var height = Math.abs(this.startRow - row) + 1;
+
+        // Set position
+        this.activeSquare.position = {
+            x: this.grid.bounds.left + ((width / 2 + this.startColumn) * this.grid.cellSize),
+            y: this.grid.bounds.top + ((height / 2 + this.startRow) * this.grid.cellSize)
+        };
+
+        // Change size if necessary
+        if (row !== this.previousRow) {
+            this.activeSquare.size = {
+                width: this.activeSquare.size.width,
+                height: height * this.grid.cellSize
+            };
+        }
+
+        // Offset position if necessary
+        if (row < this.startRow) {
+            this.activeSquare.position = {
+                x: this.activeSquare.position.x,
+                y: this.activeSquare.position.y - ((this.startRow - row) * this.grid.cellSize)
+            };
+        }
+
+        // Change size if necessary
+        if (column !== this.previousColumn) {
+            this.activeSquare.size = {
+                width: width * this.grid.cellSize,
+                height: this.activeSquare.size.height
+            };
+        }
+
+        // Offset position if necessary
+        if (column < this.startColumn) {
+            this.activeSquare.position = {
+                x: this.activeSquare.position.x - ((this.startColumn - column) * this.grid.cellSize),
+                y: this.activeSquare.position.y
+            };
+        }
+
+        if (row !== this.previousRow || column !== this.previousColumn) {
+            this.areaLabel.text = 'Area\n' + (width * height);
+            sona.play('move');
+        }
+
+        this.previousRow = row;
+        this.previousColumn = column;
+    };
+
+    GameScene.prototype.onPointEnd = function (ignore) {
+        if (this.activeSquare.alpha === 1) {
+            var width = Math.abs(this.startColumn - this.previousColumn) + 1;
+            var height = Math.abs(this.startRow - this.previousRow) + 1;
+            var area = width * height;
+
+            // Dupe the activeSquare
+            var dupe = new Square({
+                position: {
+                    x: this.activeSquare.position.x,
+                    y: this.activeSquare.position.y
+                },
+                size: {
+                    width: this.activeSquare.size.width,
+                    height: this.activeSquare.size.height
+                },
+                area: area  // non-standard prop
+            });
+
+            this.add(dupe);
+            this.squares.push(dupe);
+
+            dupe.tween('scale', 1.1, 50, 'linearNone', function () {
+                dupe.tween('scale', 1, 100);
+            });
+
+            sona.play('place');
+
+            // Check if square overlaps a clue
+            // If square overlaps a single clue, check if the area matches the clue
+            // If area matches the single clue, give the square a different color
+
+            // Reset the activeSquare
+            this.activeSquare.alpha = 0;
+        }
+
+        // Check if player has won
+        if (this.check()) {
+            this.win();
+        }
+
+        // Clear out previous data
+        this.startRow = null;
+        this.previousRow = null;
+        this.startColumn = null;
+        this.previousColumn = null;
+        this.areaLabel.text = 'Area\n--';
+    };
+
+    GameScene.prototype.check = function () {
+        var self = this;
+
+        if (this.squares.length !== this.clues.length) {
+            // console.log('Square count doesn\'t match clue count');
+            return false;
+        }
+
+        var success = true;
+
+        this.squares.forEach(function (square) {
+            var collisionCount = 0;
+            var validClue = null;
+
+            self.clues.forEach(function (clue) {
+                if (clue.collidesWith(square)) {
+                    validClue = clue;
+                    collisionCount += 1;
+                }
+            });
+
+            if (collisionCount > 1 || collisionCount === 0) {
+                // console.log("Failing because a clue has either no squares covering it, or multiple squares covering it");
+                success = false;
+            } else if (validClue.number !== square.area) {
+                // console.log("Clue (" + validClue.number + ") and Square area (" + square.area + ") don't match!");
+                success = false;
+            }
+        });
+
+        return success;
+    };
+
+    GameScene.prototype.win = function () {
+        var completedLevels = localStorage.getObject('completedLevels') || [];
+        while (this.completedLevels.length < LEVELS.length) {
+            completedLevels.push(null);
+        }
+        completedLevels[this.level] = true;
+        localStorage.setObject('completedLevels', completedLevels);
+
+        var incompleteLevel = completedLevels.indexOf(null);
+
+        window.setTimeout(function () {
+            sona.play('win');
+
+            if (window.confirm('Success! Next puzzle?')) {
+                sona.play('button');
+
+                if (incompleteLevel === -1) {
+                    Arcadia.changeScene(LevelSelectScene);
+                } else if (Arcadia.isLocked() && incompleteLevel >= Arcadia.FREE_LEVELS) {
+                    Arcadia.changeScene(UnlockScene);
+                } else {
+                    Arcadia.changeScene(GameScene, {level: incompleteLevel});
+                }
+            } else {
+                Arcadia.changeScene(LevelSelectScene);
+            }
+        }, 1000);
+    };
+
+    GameScene.prototype.drawClues = function () {
+        var self = this;
+
+        this.levelData.clues.forEach(function (clue) {
+            var x = clue[0];
+            var y = clue[1];
+            var value = clue[2];
+            var CLUE_OFFSET = 2;
+
+            var clueLabel = new Clue({
+                number: value,
+                position: {
+                    x: self.grid.bounds.left + (x * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET,
+                    y: self.grid.bounds.top + (y * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET
+                }
+            });
+            self.add(clueLabel);
+            self.clues.push(clueLabel);
+        });
+    };
+
+    GameScene.prototype.drawUi = function () {
+        var BUTTON_PADDING = 5;
+        var self = this;
+
+        var quitButton = new Arcadia.Button({
+            color: null,
+            border: '2px white',
+            label: new Arcadia.Label({
+                color: 'white',
+                text: 'quit',
+                font: '20px monospace'
+            }),
+            size: {width: Grid.MAX_SIZE / 2 - BUTTON_PADDING, height: 40},
+            action: function () {
                 sona.play('button');
                 Arcadia.changeScene(LevelSelectScene);
             }
-        }
-    });
-    quitButton.position =  {
-        x: quitButton.size.width / 2 + padding,
-        y: -this.size.height / 2 + quitButton.size.height / 2 + this.VERTICAL_PADDING
-    };
-    this.add(quitButton);
+        });
+        quitButton.position = {
+            x: quitButton.size.width / 2 + BUTTON_PADDING,
+            y: -this.size.height / 2 + quitButton.size.height / 2 + this.VERTICAL_PADDING
+        };
+        this.add(quitButton);
 
-    resetButton = new Arcadia.Button({
-        color: null,
-        border: '2px white',
-        label: new Arcadia.Label({
-            color: 'white',
-            text: 'reset',
-            font: '20px monospace'
-        }),
-        size: { width: Grid.MAX_SIZE / 2 - padding, height: 40 },
-        action: function () {
-            sona.play('button');
-
-            if (confirm('Reset?')) {
+        var resetButton = new Arcadia.Button({
+            color: null,
+            border: '2px white',
+            label: new Arcadia.Label({
+                color: 'white',
+                text: 'reset',
+                font: '20px monospace'
+            }),
+            size: {width: Grid.MAX_SIZE / 2 - BUTTON_PADDING, height: 40},
+            action: function () {
                 sona.play('button');
+
                 self.squares.forEach(function (square) {
                     self.remove(square);
                 });
                 self.squares = [];
             }
-        }
-    });
-    resetButton.position =  {
-        x: -resetButton.size.width / 2 - padding,
-        y: -this.size.height / 2 + resetButton.size.height / 2 + this.VERTICAL_PADDING
-    };
-    this.add(resetButton);
+        });
+        resetButton.position = {
+            x: -resetButton.size.width / 2 - BUTTON_PADDING,
+            y: -this.size.height / 2 + resetButton.size.height / 2 + this.VERTICAL_PADDING
+        };
+        this.add(resetButton);
 
-    areaLabelBackground = new Arcadia.Shape({
-        color: null,
-        border: '2px white',
-        size: { width: Grid.MAX_SIZE / 2 - padding, height: 80 }
-    });
-    areaLabelBackground.position =  {
-        x: -areaLabelBackground.size.width / 2 - padding,
-        y: resetButton.position.y + resetButton.size.height / 2 + areaLabelBackground.size.height / 2 + padding * 2
-    };
-    this.add(areaLabelBackground);
-
-    this.areaLabel = new Arcadia.Label({
-        color: 'white',
-        text: 'Area\n--',
-        font: '28px monospace'
-    });
-    areaLabelBackground.add(this.areaLabel);
-
-    timerLabelBackground = new Arcadia.Shape({
-        color: null,
-        border: '2px white',
-        size: { width: Grid.MAX_SIZE / 2 - padding, height: 80 }
-    });
-    timerLabelBackground.position =  {
-        x: timerLabelBackground.size.width / 2 + padding,
-        y: quitButton.position.y + quitButton.size.height / 2 + timerLabelBackground.size.height / 2 + padding * 2
-    };
-    this.add(timerLabelBackground);
-
-    this.timerLabel = new Arcadia.Label({
-        color: 'white',
-        text: 'Time\n00:00',
-        font: '28px monospace'
-    });
-    timerLabelBackground.add(this.timerLabel);
-
-    if (this.showTutorial) {
-        this.tutorialLabelBackground = new Arcadia.Shape({
+        var areaLabelBackground = new Arcadia.Shape({
             color: null,
             border: '2px white',
-            size: { width: Grid.MAX_SIZE / 1.5, height: 110 },
-            position: { x: 0, y: 230 }
+            size: {width: Grid.MAX_SIZE / 2 - BUTTON_PADDING, height: 80}
         });
-        this.add(this.tutorialLabelBackground);
+        areaLabelBackground.position = {
+            x: -areaLabelBackground.size.width / 2 - BUTTON_PADDING,
+            y: resetButton.position.y + resetButton.size.height / 2 + areaLabelBackground.size.height / 2 + BUTTON_PADDING * 2
+        };
+        this.add(areaLabelBackground);
 
-        this.tutorialLabel = new Arcadia.Label({
+        this.areaLabel = new Arcadia.Label({
             color: 'white',
-            text: 'Tutorial text goes here\nhow much text can\nfit in this box?\na lot apparently',
-            font: '20px monospace'
+            text: 'Area\n--',
+            font: '28px monospace'
         });
-        this.tutorialLabelBackground.add(this.tutorialLabel);
+        areaLabelBackground.add(this.areaLabel);
 
-        this.hint = new Square({
-            alpha: 0
+        var timerLabelBackground = new Arcadia.Shape({
+            color: null,
+            border: '2px white',
+            size: {width: Grid.MAX_SIZE / 2 - BUTTON_PADDING, height: 80}
         });
-        this.add(this.hint);
-    }
-};
+        timerLabelBackground.position = {
+            x: timerLabelBackground.size.width / 2 + BUTTON_PADDING,
+            y: quitButton.position.y + quitButton.size.height / 2 + timerLabelBackground.size.height / 2 + BUTTON_PADDING * 2
+        };
+        this.add(timerLabelBackground);
+
+        this.timerLabel = new Arcadia.Label({
+            color: 'white',
+            text: 'Time\n00:00',
+            font: '28px monospace'
+        });
+        timerLabelBackground.add(this.timerLabel);
+
+        if (this.showTutorial) {
+            this.tutorialLabelBackground = new Arcadia.Shape({
+                color: null,
+                border: '2px white',
+                size: {width: Grid.MAX_SIZE / 1.5, height: 110},
+                position: {x: 0, y: 230}
+            });
+            this.add(this.tutorialLabelBackground);
+
+            this.tutorialLabel = new Arcadia.Label({
+                color: 'white',
+                text: 'Tutorial text goes here\nhow much text can\nfit in this box?\na lot apparently',
+                font: '20px monospace'
+            });
+            this.tutorialLabelBackground.add(this.tutorialLabel);
+
+            this.hint = new Square({
+                alpha: 0
+            });
+            this.add(this.hint);
+        }
+    };
+
+    root.GameScene = GameScene;
+}(window));

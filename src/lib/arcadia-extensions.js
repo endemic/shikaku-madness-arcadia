@@ -1,24 +1,30 @@
-/*jslint sloppy: true */
-/*globals Arcadia, window, document, localStorage */
+/*jslint this, browser */
+/*global window */
 
-Arcadia.isLocked = function () {
-    return window.store !== undefined && localStorage.getBoolean('unlocked') === false;
-};
+(function (root) {
+    'use strict';
 
-Arcadia.cycleBackground = function () {
-    var TOTAL_BACKGROUNDS = 6,
-        backgroundCounter;
+    var Arcadia = root.Arcadia || {};
 
-    backgroundCounter = parseInt(localStorage.getItem('backgroundCounter'), 10) || 1;
+    Arcadia.isLocked = function () {
+        return window.store !== undefined && localStorage.getBoolean('unlocked') === false;
+    };
 
-    backgroundCounter += 1;
+    Arcadia.cycleBackground = function () {
+        var TOTAL_BACKGROUNDS = 6;
+        var backgroundCounter = parseInt(localStorage.getItem('backgroundCounter'), 10) || 1;
 
-    if (backgroundCounter > TOTAL_BACKGROUNDS) {
-        backgroundCounter = 1;
-    }
+        backgroundCounter += 1;
 
-    localStorage.setItem('backgroundCounter', backgroundCounter);
-    document.body.style['background-image'] = 'url("assets/images/background_' + backgroundCounter + '.png")';
-};
+        if (backgroundCounter > TOTAL_BACKGROUNDS) {
+            backgroundCounter = 1;
+        }
 
-Arcadia.freeLevels = 20;
+        localStorage.setItem('backgroundCounter', backgroundCounter);
+        document.body.style['background-image'] = 'url("assets/images/background_' + backgroundCounter + '.png")';
+    };
+
+    Arcadia.FREE_LEVELS = 20;
+
+    root.Arcadia = Arcadia;
+}(window));
