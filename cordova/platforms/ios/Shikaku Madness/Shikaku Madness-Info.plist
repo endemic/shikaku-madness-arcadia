@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>English</string>
     <key>CFBundleDisplayName</key>
-    <string>${PRODUCT_NAME}</string>
+    <string>Shikaku</string>
     <key>CFBundleExecutable</key>
     <string>${EXECUTABLE_NAME}</string>
     <key>CFBundleIconFile</key>
@@ -73,6 +73,8 @@
     <string/>
     <key>NSMainNibFile~ipad</key>
     <string/>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
     <key>UILaunchImages</key>
     <array>
       <dict>

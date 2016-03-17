@@ -1,17 +1,20 @@
 # TODO
 
-[ ] Add "reset data" option to credits view
+[ ] Add "About" view, similar content to "Credits" but with "more games" and "data reset" buttons
 [ ] Add "complete" window/effect w/ buttons
-	* Remove grid
+	* Fade out grid
 	* Show "complete" box w/ a "next" button
-[ ] Add 9 more 5x5 level
 [ ] Create 2 more tutorial levels
 [ ] Create basic level editor
+[ ] Make more, smaller levels - 10 5x5, 10 6x6, 10 7x7, 10 8x8, 10 9x9, then include the rest of the 10x10, for 170 total
+[ ] Group levels by grid size, not "difficulty"
 [ ] Run source through JSLint
-[ ] Create visual effect for removing squares
-	- scale up + fade
+[ ] Create visual effect for removing squares - scale up + fade
 [x] Remove GameScene.ignoreInput
 [x] Extract tutorial config to allow for hints on more puzzles
+[x] Show red border around locked levels when IAP available
+[ ] Transition to IAP scene after finishing intro levels
+[ ] Go directly from "start" into "game"
 
 [x] Copy appcache and webapp manifests to web target
 [x] Add a "rules" scene
