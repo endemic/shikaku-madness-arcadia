@@ -15,6 +15,7 @@
 [x] Show red border around locked levels when IAP available
 [ ] Transition to IAP scene after finishing intro levels
 [ ] Go directly from "start" into "game"
+[ ] Create favicon
 
 [x] Copy appcache and webapp manifests to web target
 [x] Add a "rules" scene

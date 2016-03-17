@@ -1,5 +1,5 @@
 /*jslint this, browser */
-/*global window, Arcadia, sona */
+/*global window, Arcadia, sona, TitleScene, Square, Grid, Clue */
 
 (function (root) {
     'use strict';
@@ -16,9 +16,13 @@
               gives the "number" of the clue, can't place outside a square
          */
 
-        this.gridCount = this.MAX_GRID_COUNT = 10;
+        this.MAX_GRID_COUNT = 10;
         this.MIN_GRID_COUNT = 5;
-        this.verticalPadding = 81;
+
+        this.gridCount = this.MAX_GRID_COUNT;
+        this.verticalPadding = 70;
+
+        this.action = 'square';
 
         // Puzzle grid
         this.grid = new Grid({
@@ -30,13 +34,18 @@
         });
         this.add(this.grid);
 
+        this.activeSquare = new Square({alpha: 0});
+        this.add(this.activeSquare);
+
+        // Array to hold placed objects
+        this.squares = [];
+
         this.drawUi();
     };
 
     EditorScene.prototype = new Arcadia.Scene();
 
     EditorScene.prototype.save = function () {
-        var userPuzzles = localStorage.getObject('userPuzzles') || [];
         /*
             Puzzle data format: {
                 "size":5,
@@ -45,7 +54,48 @@
                 "squares":[[x, y, width, height]] // (x,y) is lower left
             };
         */
-        localStorage.setObject('userPuzzles', userPuzzles);
+
+        var userPuzzles = localStorage.getObject('userPuzzles') || [];
+        var self = this;
+        var data = {
+            size: this.gridCount,
+            clues: [],
+            squares: []
+        };
+        
+        this.squares.forEach(function (square) {
+            // Clue coords being stored with origin of top left
+            var clue = square.clue;
+            var values = self.grid.getRowAndColumn(clue.position);
+            var row = values[0];
+            var column = values[1];
+            var serializedClue = [column, row, clue.number];
+            data.clues.push(serializedClue);
+
+            // Square coords being stored with origin of bottom left
+            var width = Math.round(square.size.width / self.grid.cellSize);
+            var height = Math.round(square.size.height / self.grid.cellSize);
+            var squareLowerLeft = {
+                x: square.position.x - square.size.width / 2 + self.grid.cellSize / 2,
+                y: square.position.y + square.size.height / 2 - self.grid.cellSize / 2
+            };
+
+            // debug
+            // var shape = new Arcadia.Shape({color: 'green', vertices: 0});
+            // shape.position = squareLowerLeft;
+            // self.add(shape);
+
+            values = self.grid.getRowAndColumn(squareLowerLeft);
+            row = values[0];
+            column = values[1];
+            var serializedSquare = [column, row, width, height];
+            data.squares.push(serializedSquare);
+        });
+
+        // debugger;
+        userPuzzles.push(data);
+        // localStorage.setObject('userPuzzles', userPuzzles);
+        console.log(JSON.stringify(data));
     };
 
     EditorScene.prototype.drawUi = function () {
@@ -61,7 +111,7 @@
                 text: 'smaller',
                 font: '24px monospace'
             }),
-            size: { width: buttonWidth, height: buttonHeight },
+            size: {width: buttonWidth, height: buttonHeight},
             position: {
                 x: buttonWidth / 2 + padding / 2,
                 y: -this.size.height / 2 + buttonHeight / 2 + this.verticalPadding
@@ -83,7 +133,7 @@
                 text: 'bigger',
                 font: '24px monospace'
             }),
-            size: { width: buttonWidth, height: buttonHeight },
+            size: {width: buttonWidth, height: buttonHeight},
             position: {
                 x: -buttonWidth / 2 - padding / 2,
                 y: -this.size.height / 2 + buttonHeight / 2 + this.verticalPadding
@@ -98,6 +148,48 @@
         });
         this.add(biggerButton);
 
+        var squareButton = new Arcadia.Button({
+            color: null,
+            border: '3px white',
+            label: new Arcadia.Label({
+                text: 'square',
+                font: '24px monospace'
+            }),
+            size: {width: buttonWidth, height: buttonHeight},
+            position: {
+                x: buttonWidth / 2 + padding / 2,
+                y: smallerButton.position.y + smallerButton.size.height + padding
+            },
+            action: function () {
+                sona.play('button');
+                // Change action to place square
+                // TODO: highlight button in some way
+                self.action = 'square';
+            }
+        });
+        this.add(squareButton);
+
+        var hintButton = new Arcadia.Button({
+            color: null,
+            border: '3px white',
+            label: new Arcadia.Label({
+                text: 'hint',
+                font: '24px monospace'
+            }),
+            size: {width: buttonWidth, height: buttonHeight},
+            position: {
+                x: -buttonWidth / 2 - padding / 2,
+                y: biggerButton.position.y + biggerButton.size.height + padding
+            },
+            action: function () {
+                sona.play('button');
+                // Change action to place hint
+                // TODO: highlight button in some way
+                self.action = 'hint';
+            }
+        });
+        this.add(hintButton);
+
         var resetButton = new Arcadia.Button({
             color: null,
             border: '3px white',
@@ -105,14 +197,20 @@
                 text: 'reset',
                 font: '24px monospace'
             }),
-            size: { width: buttonWidth, height: buttonHeight },
+            size: {width: buttonWidth, height: buttonHeight},
             position: {
                 x: buttonWidth / 2 + padding / 2,
-                y: smallerButton.position.y + smallerButton.size.height + padding
+                y: squareButton.position.y + squareButton.size.height + padding
             },
             action: function () {
                 sona.play('button');
-                // TODO: Reset here
+
+                self.squares.forEach(function (square) {
+                    self.remove(square);
+                    self.remove(square.clue);
+                });
+
+                self.squares = [];
             }
         });
         this.add(resetButton);
@@ -124,21 +222,25 @@
                 text: 'save & quit',
                 font: '24px monospace'
             }),
-            size: { width: buttonWidth, height: buttonHeight },
+            size: {width: buttonWidth, height: buttonHeight},
             position: {
                 x: -buttonWidth / 2 - padding / 2,
-                y: biggerButton.position.y + biggerButton.size.height + padding
+                y: hintButton.position.y + hintButton.size.height + padding
             },
             action: function () {
                 sona.play('button');
                 self.save();
-                Arcadia.changeScene(TitleScene);
+                // Arcadia.changeScene(TitleScene);
             }
         });
         this.add(saveButton);
     };
 
     EditorScene.prototype.onPointStart = function (points) {
+        if (this.action === 'hint') {
+            return;
+        }
+
         var self = this;
         var values = this.grid.getRowAndColumn(points[0]);
         var row = values[0];
@@ -149,8 +251,10 @@
         }
 
         this.startPoint = points[0];
-        this.startRow = this.previousRow = row;
-        this.startColumn = this.previousColumn = column;
+        this.startRow = row;
+        this.previousRow = row;
+        this.startColumn = column;
+        this.previousColumn = column;
 
         this.activeSquare.position = {
             x: this.grid.bounds.left + column * this.grid.cellSize + this.grid.cellSize / 2,
@@ -175,6 +279,10 @@
     };
 
     EditorScene.prototype.onPointMove = function (points) {
+        if (this.action === 'hint') {
+            return;
+        }
+
         if (this.startRow === null || this.startColumn === null) {
             return;
         }
@@ -191,7 +299,6 @@
         // Player has to move input at least 5px to start drawing a new one
         if (Arcadia.distance(points[0], this.startPoint) > 5 && this.activeSquare.alpha === 0) {
             this.activeSquare.alpha = 1;
-            this.areaLabel.text = 'Area\n1';
             sona.play('move');
         }
 
@@ -238,7 +345,6 @@
 
         if (row !== this.previousRow || column !== this.previousColumn) {
             sona.play('move');
-            this.areaLabel.text = 'Area\n' + (width * height);
         }
 
         this.previousRow = row;
@@ -246,7 +352,7 @@
     };
 
     EditorScene.prototype.onPointEnd = function (points) {
-        if (this.activeSquare.alpha === 1) {
+        if (this.activeSquare.alpha === 1 && this.action === 'square') {
             var width = Math.abs(this.startColumn - this.previousColumn) + 1;
             var height = Math.abs(this.startRow - this.previousRow) + 1;
             var area = width * height;
@@ -267,15 +373,43 @@
             this.add(dupe);
             this.squares.push(dupe);
 
+            sona.play('place');
+
             // Reset the activeSquare
             this.activeSquare.alpha = 0;
-        } else {
+        } else if (this.action === 'hint') {
+            var cursor = {
+                size: {width: 1, height: 1},
+                position: points[0]
+            };
+            var values = this.grid.getRowAndColumn(points[0]);
+            var row = values[0];
+            var column = values[1];
+            var self = this;
+            var CLUE_OFFSET = 2;
+
             // Try to place the hint, if intersects a square
+            this.squares.forEach(function (square) {
+                if (square.collidesWith(cursor)) {
+                    // Create za clue
+                    if (!square.clue) {
+                        square.clue = new Clue({number: square.area});
+                    }
+                    square.clue.position = {
+                        x: self.grid.bounds.left + (column * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET,
+                        y: self.grid.bounds.top + (row * self.grid.cellSize) + Clue.SIZE / 2 + CLUE_OFFSET
+                    };
+                    self.add(square.clue);
+                    sona.play('place');
+                }
+            });
         }
 
         // Clear out previous data
-        this.startRow = this.previousRow = null;
-        this.startColumn = this.previousColumn = null;
+        this.startRow = null;
+        this.previousRow = null;
+        this.startColumn = null;
+        this.previousColumn = null;
     };
 
     root.EditorScene = EditorScene;

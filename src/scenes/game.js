@@ -14,8 +14,7 @@ LevelSelectScene, UnlockScene */
 
         this.level = options.level || 0;
         this.levelData = LEVELS[this.level];
-
-        this.showTutorial = TUTORIALS[this.level] !== undefined;
+        this.showTutorial = !!TUTORIALS[this.level];
         this.tutorialStep = 0;
 
         this.timer = 0;
@@ -293,7 +292,7 @@ LevelSelectScene, UnlockScene */
 
     GameScene.prototype.win = function () {
         var completedLevels = localStorage.getObject('completedLevels') || [];
-        while (this.completedLevels.length < LEVELS.length) {
+        while (completedLevels.length < LEVELS.length) {
             completedLevels.push(null);
         }
         completedLevels[this.level] = true;
