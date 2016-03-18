@@ -1,11 +1,11 @@
 # TODO
 
-[ ] Add "About" view, similar content to "Credits" but with "more games" and "data reset" buttons
+[x] Add "About" view, similar content to "Credits" but with "more games" and "data reset" buttons
 [ ] Add "complete" window/effect w/ buttons
 	* Fade out grid
 	* Show "complete" box w/ a "next" button
 [ ] Create 2 more tutorial levels
-[ ] Create basic level editor
+[x] Create basic level editor
 [ ] Make more, smaller levels - 10 5x5, 10 6x6, 10 7x7, 10 8x8, 10 9x9, then include the rest of the 10x10, for 170 total
 [ ] Group levels by grid size, not "difficulty"
 [ ] Run source through JSLint

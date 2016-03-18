@@ -249,10 +249,7 @@ LevelSelectScene.prototype.onPointEnd = function (points) {
 };
 
 LevelSelectScene.prototype.drawUi = function () {
-    var title,
-        backButton,
-        playButton,
-        self = this;
+    var self = this;
 
     this.pageLabel = new Arcadia.Label({
         position: { x: 0, y: -145 },
@@ -278,16 +275,13 @@ LevelSelectScene.prototype.drawUi = function () {
     });
     this.add(this.completedLabel);
 
-    backButton = new Arcadia.Button({
-        position: { x: -this.size.width / 2 + 65, y: -this.size.height / 2 + 25 },
-        size: { width: 120, height: 40 },
+    var backButton = new Arcadia.Button({
+        position: {x: -this.size.width / 2 + 65, y: -this.size.height / 2 + 25},
+        size: {width: 120, height: 40},
         color: null,
         border: '2px white',
-        label: new Arcadia.Label({
-            text: '< title',
-            color: 'white',
-            font: '24px monospace'
-        }),
+        text: '< title',
+        font: '24px monospace',
         action: function () {
             sona.play('button');
             Arcadia.changeScene(TitleScene);
@@ -295,22 +289,20 @@ LevelSelectScene.prototype.drawUi = function () {
     });
     this.add(backButton);
 
-    title = new Arcadia.Label({
+    var title = new Arcadia.Label({
         text: 'Choose\nPuzzle',
         font: '48px monospace',
         position: { x: 0, y: -this.size.height / 2 + 110 }
     });
     this.add(title);
 
-    playButton = new Arcadia.Button({
-        position: { x: 0, y: this.size.height / 2 - 50 },
-        size: { width: 180, height: 50 },
+    var playButton = new Arcadia.Button({
+        position: {x: 0, y: this.size.height / 2 - 50},
+        size: {width: 180, height: 50},
         color: null,
         border: '2px white',
-        label: new Arcadia.Label({
-            text: 'play',
-            font: '36px monospace'
-        }),
+        text: 'play',
+        font: '36px monospace',
         action: function () {
             sona.play('button');
 

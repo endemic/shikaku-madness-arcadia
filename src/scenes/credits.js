@@ -18,10 +18,17 @@
         });
         this.add(title);
 
+        var creditsText = [
+            'Programming by Nathan Demick',
+            'Puzzle concept by Nikoli',
+            '(c) 2011-2016 Ganbaru Games',
+            'https://ganbarugames.com'
+        ].join('\n');
+
         var description = new Arcadia.Label({
             position: {x: 0, y: 33},
             font: '20px monospace',
-            text: 'Programming by Nathan Demick\nPuzzle concept by Nikoli\n(c) 2011-2016 Ganbaru Games\nhttps://ganbarugames.com'
+            text: creditsText
         });
         this.add(description);
 

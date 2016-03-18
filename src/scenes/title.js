@@ -12,7 +12,7 @@
         var BUTTON_MARGIN = 10;
 
         var titleLabel = new Arcadia.Label({
-            text: 'Shikaku\nMadness',
+            text: 'shikaku\nmadness',
             font: '64px monospace',
             position: {x: 0, y: -100}
         });
@@ -74,6 +74,20 @@
         //     }
         // });
         // this.add(editorButton);
+
+        var aboutButton = new Arcadia.Button({
+            position: {x: 0, y: rulesButton.position.y + rulesButton.size.height + BUTTON_MARGIN},
+            size: {width: 180, height: 50},
+            color: null,
+            border: '2px white',
+            text: 'about',
+            font: '36px monospace',
+            action: function () {
+                sona.play('button');
+                Arcadia.changeScene(AboutScene);
+            }
+        });
+        this.add(aboutButton);
     };
 
     TitleScene.prototype = new Arcadia.Scene();
