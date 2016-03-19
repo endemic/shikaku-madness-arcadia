@@ -87,7 +87,7 @@ var AboutScene = function () {
     });
     this.add(dataResetButton);
 
-    if (Arcadia.ENV.cordova || true) {
+    if (Arcadia.ENV.cordova) {
         var moreGamesButton = new Arcadia.Button({
             position: {x: 0, y: dataResetButton.position.y + BUTTON_MARGIN},
             size: {width: 240, height: 50},

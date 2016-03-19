@@ -4,18 +4,20 @@
 [ ] Add "complete" window/effect w/ buttons
 	* Fade out grid
 	* Show "complete" box w/ a "next" button
+	* bug is preventing child buttons from being clicked - either fix the bug in Arcadia, or work around
+[x] Create visual effect for removing squares - scale up + fade
+[ ] I don't like the "placement" effect :/
 [ ] Create 2 more tutorial levels
-[x] Create basic level editor
-[ ] Make more, smaller levels - 10 5x5, 10 6x6, 10 7x7, 10 8x8, 10 9x9, then include the rest of the 10x10, for 170 total
-[ ] Group levels by grid size, not "difficulty"
 [ ] Run source through JSLint
-[ ] Create visual effect for removing squares - scale up + fade
+[ ] Create favicon
+[x] Create basic level editor
+[x] Make more, smaller levels - 10 5x5, 10 6x6, 10 7x7, 10 8x8, 10 9x9, then include the rest of the 10x10, for 170 total
+[x] Group levels by grid size, not "difficulty"
 [x] Remove GameScene.ignoreInput
 [x] Extract tutorial config to allow for hints on more puzzles
 [x] Show red border around locked levels when IAP available
-[ ] Transition to IAP scene after finishing intro levels
-[ ] Go directly from "start" into "game"
-[ ] Create favicon
+[x] Transition to IAP scene after finishing intro levels
+[x] Go directly from "start" into "game"
 
 [x] Copy appcache and webapp manifests to web target
 [x] Add a "rules" scene

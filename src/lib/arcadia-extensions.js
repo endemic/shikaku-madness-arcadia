@@ -24,7 +24,7 @@
         document.body.style['background-image'] = 'url("assets/images/background_' + backgroundCounter + '.png")';
     };
 
-    Arcadia.FREE_LEVELS = 20;
+    Arcadia.FREE_LEVEL_COUNT = 20;
 
     root.Arcadia = Arcadia;
 }(window));

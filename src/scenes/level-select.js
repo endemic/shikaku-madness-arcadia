@@ -222,7 +222,8 @@ LevelSelectScene.prototype.previous = function () {
 LevelSelectScene.prototype.updatePageLabel = function () {
     this.pageLabel.text = 'Page ' + (this.currentPage + 1) + ' of ' + this.totalPages;
     this.puzzleLabel.text = 'Puzzle #' + (this.selectedLevel + 1);
-    this.difficultyLabel.text = 'Difficulty: ' + LEVELS[this.selectedLevel].difficulty;
+    // this.difficultyLabel.text = 'Difficulty: ' + LEVELS[this.selectedLevel].difficulty;
+    this.difficultyLabel.text = 'Size: ' + LEVELS[this.selectedLevel].size + 'x' + LEVELS[this.selectedLevel].size;
     this.completedLabel.text = 'Completed? ' + (this.completedLevels[this.selectedLevel] ? '✓' : '✗');
 };
 
