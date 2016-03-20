@@ -304,6 +304,12 @@ LevelSelectScene, UnlockScene */
     };
 
     GameScene.prototype.win = function () {
+        if (this.alreadyWon) {
+            return;
+        }
+
+        this.alreadyWon = true;
+
         var completedLevels = localStorage.getObject('completedLevels') || [];
         while (completedLevels.length < LEVELS.length) {
             completedLevels.push(null);
