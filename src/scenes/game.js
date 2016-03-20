@@ -237,15 +237,16 @@ LevelSelectScene, UnlockScene */
                     width: this.activeSquare.size.width,
                     height: this.activeSquare.size.height
                 },
-                area: area  // non-standard prop
+                area: area,  // non-standard prop
+                scale: 1.25,
+                alpha: 0
             });
 
             this.add(dupe);
             this.squares.push(dupe);
 
-            dupe.tween('scale', 1.1, 50, 'linearNone', function () {
-                dupe.tween('scale', 1, 100);
-            });
+            dupe.tween('scale', 1, 300);
+            dupe.tween('alpha', 1, 300);
 
             sona.play('place');
 

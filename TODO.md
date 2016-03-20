@@ -6,10 +6,10 @@
 	* Show "complete" box w/ a "next" button
 	* bug is preventing child buttons from being clicked - either fix the bug in Arcadia, or work around
 [x] Create visual effect for removing squares - scale up + fade
-[ ] I don't like the "placement" effect :/
+[x] I don't like the "placement" effect :/
 [ ] Create 2 more tutorial levels
 [ ] Test IAP
-[ ] Add "unlock" button to Level Select
+[x] Add "unlock" button to Level Select
 [ ] Run source through JSLint
 [ ] Create favicon
 [x] Add "more games" button to About

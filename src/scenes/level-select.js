@@ -291,6 +291,22 @@ LevelSelectScene.prototype.drawUi = function () {
     });
     this.add(backButton);
 
+    if (Arcadia.ENV.cordova && Arcadia.isLocked()) {
+        var unlockButton = new Arcadia.Button({
+            position: {x: this.size.width / 2 - 65, y: -this.size.height / 2 + 25},
+            size: {width: 120, height: 40},
+            color: null,
+            border: '2px white',
+            text: 'unlock',
+            font: '24px monospace',
+            action: function () {
+                sona.play('button');
+                Arcadia.changeScene(UnlockScene);
+            }
+        });
+        this.add(unlockButton);
+    }
+
     var title = new Arcadia.Label({
         text: 'Choose\nPuzzle',
         font: '48px monospace',
