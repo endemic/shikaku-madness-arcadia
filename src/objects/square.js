@@ -59,5 +59,17 @@
         context.stroke();
     };
 
+    Square.prototype.blink = function () {
+        var self = this;
+        var callback = function () {
+            // console.log('blink callback');
+            self.blink();
+        };
+        // ocillate between 0 - 0.5
+        var alphaValue = this.alpha === 1 ? 0 : 1;
+        // console.log('calling blink; alpha value: ', alphaValue, this.alpha);
+        this.tween('alpha', alphaValue, 1000, 'linearNone', callback);
+    };
+
     root.Square = Square;
 }(window));

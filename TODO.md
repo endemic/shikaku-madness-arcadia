@@ -7,8 +7,15 @@
 	* bug is preventing child buttons from being clicked - either fix the bug in Arcadia, or work around
 [x] Create visual effect for removing squares - scale up + fade
 [x] I don't like the "placement" effect :/
-[ ] Create 2 more tutorial levels
+[x] Make "hint" square blink
+[x] Tapping a level twice will de-select it (copy fix from Nonograms)
+[x] Make the last played level the one that is highlighted on the level select screen
+[x] Create 2 more tutorial levels
 [ ] Test IAP
+[ ] Test "more games" button
+[ ] Screenshots
+	[ ] iPhone 6S
+	[ ] iPad Pro
 [x] Add "unlock" button to Level Select
 [ ] Run source through JSLint
 [ ] Create favicon

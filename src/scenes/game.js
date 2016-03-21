@@ -13,6 +13,7 @@ LevelSelectScene, UnlockScene */
         Arcadia.cycleBackground();
 
         this.level = options.level || 0;
+        localStorage.setItem('selectedLevel', this.level);
         this.levelData = LEVELS[this.level];
         this.showTutorial = !!TUTORIALS[this.level];
         this.tutorialStep = 0;
@@ -58,6 +59,10 @@ LevelSelectScene, UnlockScene */
     GameScene.prototype.update = function (delta) {
         Arcadia.Scene.prototype.update.call(this, delta);
 
+        if (this.gameOver) {
+            return;
+        }
+
         this.timer += delta;
 
         var zeroPad = function (string, length) {
@@ -80,8 +85,8 @@ LevelSelectScene, UnlockScene */
             var square = TUTORIALS[this.level].squares[this.tutorialStep];
 
             var success = this.squares.find(function (s) {
-                return Math.round(s.position.x) === square.position.x &&
-                        Math.round(s.position.y) === square.position.y &&
+                return Math.round(s.position.x) === Math.round(square.position.x) &&
+                        Math.round(s.position.y) === Math.round(square.position.y) &&
                         s.area === square.area;
             });
 
@@ -94,19 +99,19 @@ LevelSelectScene, UnlockScene */
 
     GameScene.prototype.displayTutorial = function () {
         this.tutorialLabel.text = TUTORIALS[this.level].text[this.tutorialStep] || '';
-
         var hintInfo = TUTORIALS[this.level].hints[this.tutorialStep];
         if (hintInfo) {
-            this.hint.alpha = 0.5;
             this.hint.position = hintInfo.position;
             this.hint.size = hintInfo.size;
-        } else {
-            this.hint.alpha = 0;
         }
     };
 
     GameScene.prototype.onPointStart = function (points) {
         Arcadia.Scene.prototype.onPointStart.call(this, points);
+
+        if (this.gameOver) {
+            return;
+        }
 
         var self = this;
         var values = this.grid.getRowAndColumn(points[0]);
@@ -150,6 +155,11 @@ LevelSelectScene, UnlockScene */
 
     GameScene.prototype.onPointMove = function (points) {
         Arcadia.Scene.prototype.onPointMove.call(this, points);
+
+        if (this.gameOver) {
+            return;
+        }
+
         if (this.startRow === null || this.startColumn === null) {
             return;
         }
@@ -222,6 +232,11 @@ LevelSelectScene, UnlockScene */
 
     GameScene.prototype.onPointEnd = function (points) {
         Arcadia.Scene.prototype.onPointEnd.call(this, points);
+
+        if (this.gameOver) {
+            return;
+        }
+
         if (this.activeSquare.alpha === 1) {
             var width = Math.abs(this.startColumn - this.previousColumn) + 1;
             var height = Math.abs(this.startRow - this.previousRow) + 1;
@@ -305,11 +320,7 @@ LevelSelectScene, UnlockScene */
     };
 
     GameScene.prototype.win = function () {
-        if (this.alreadyWon) {
-            return;
-        }
-
-        this.alreadyWon = true;
+        this.gameOver = true;
 
         var completedLevels = localStorage.getObject('completedLevels') || [];
         while (completedLevels.length < LEVELS.length) {
@@ -464,9 +475,8 @@ LevelSelectScene, UnlockScene */
             });
             this.tutorialLabelBackground.add(this.tutorialLabel);
 
-            this.hint = new Square({
-                alpha: 0
-            });
+            this.hint = new Square();
+            this.hint.blink();
             this.add(this.hint);
         }
 

@@ -32,7 +32,7 @@
         ];
 
         var titleLabel = new Arcadia.Label({
-            text: 'Rules',
+            text: 'rules',
             font: '64px monospace',
             position: {x: 0, y: -this.size.height / 2 + 110}
         });

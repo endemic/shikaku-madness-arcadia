@@ -70,7 +70,7 @@
 
         if (isComplete) {
             this.border = '2px limegreen';
-        } else if (Arcadia.isLocked() && levelIndex >= Arcadia.FREE_LEVELS) {
+        } else if (Arcadia.isLocked() && levelIndex >= Arcadia.FREE_LEVEL_COUNT) {
             this.border = '2px crimson';
         } else {
             this.border = '2px white';
