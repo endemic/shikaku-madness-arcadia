@@ -86,7 +86,7 @@ var LevelSelectScene = function (options) {
 LevelSelectScene.prototype = new Arcadia.Scene();
 
 LevelSelectScene.prototype.next = function () {
-    var offset = -Arcadia.WIDTH,
+    var offset = -Arcadia.VIEWPORT_WIDTH,
         thumbnail,
         self = this;
 
@@ -153,7 +153,7 @@ LevelSelectScene.prototype.next = function () {
 };
 
 LevelSelectScene.prototype.previous = function () {
-    var offset = Arcadia.WIDTH,
+    var offset = Arcadia.VIEWPORT_WIDTH,
         thumbnail,
         self = this;
 
