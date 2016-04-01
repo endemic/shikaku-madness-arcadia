@@ -40,13 +40,11 @@
 
         var backButton = new Arcadia.Button({
             position: {x: -this.size.width / 2 + 65, y: -this.size.height / 2 + 25},
+            size: {width: 120, height: 40},
             color: null,
-            border: '3px white',
-            label: new Arcadia.Label({
-                text: '< title',
-                color: 'white',
-                font: '24px monospace'
-            }),
+            border: '2px white',
+            text: '< title',
+            font: '24px monospace',
             action: function () {
                 window.sona.play('button');
                 Arcadia.changeScene(TitleScene);

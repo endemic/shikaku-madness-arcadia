@@ -21,7 +21,7 @@
         var description = new Arcadia.Label({
             position: {x: 0, y: -100},
             font: '20px monospace',
-            text: 'I hope you\'ve enjoyed\nsolving puzzles so far.\nWould you like to\nunlock 105 more puzzles\nfor only ' + window.PRODUCT_DATA.price + '?'
+            text: 'I hope you\'ve enjoyed\nsolving puzzles so far.\nWould you like to\nunlock 115 more puzzles\nfor only ' + window.PRODUCT_DATA.price + '?'
         });
         this.add(description);
 
@@ -32,7 +32,7 @@
             color: null,
             border: '2px #fff',
             padding: BUTTON_PADDING,
-            text: 'Yes, please',
+            text: 'yes, please',
             font: '20px monospace',
             action: function () {
                 window.sona.play('button');
@@ -46,7 +46,7 @@
             color: null,
             border: '2px #fff',
             padding: BUTTON_PADDING,
-            text: 'No, thanks',
+            text: 'no, thanks',
             font: '20px monospace',
             action: function () {
                 window.sona.play('button');
@@ -60,7 +60,7 @@
             color: null,
             border: '2px #fff',
             padding: BUTTON_PADDING,
-            text: 'Restore purchase',
+            text: 'restore purchase',
             font: '20px monospace',
             action: function () {
                 window.sona.play('button');

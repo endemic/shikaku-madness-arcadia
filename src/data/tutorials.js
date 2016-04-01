@@ -20,7 +20,7 @@ var TUTORIALS = [
         ],
         // hint text
         text: [
-            action + ' and drag to\ndraw a rectangle on\ntop of each number.',
+            action.capitalize() + ' and drag to\ndraw a rectangle on\ntop of each number.',
             'Each number\nequals the area\nof its rectangle.',
             'Rectangles cover\nonly one number.',
             'Rectangles\ncan\'t overlap!'

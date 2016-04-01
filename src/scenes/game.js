@@ -382,11 +382,8 @@ LevelSelectScene, UnlockScene */
         var quitButton = new Arcadia.Button({
             color: null,
             border: '2px white',
-            label: new Arcadia.Label({
-                color: 'white',
-                text: 'quit',
-                font: '20px monospace'
-            }),
+            text: 'quit',
+            font: '24px monospace',
             size: {width: Grid.MAX_SIZE / 2 - BUTTON_PADDING, height: 40},
             action: function () {
                 sona.play('button');
@@ -394,7 +391,7 @@ LevelSelectScene, UnlockScene */
             }
         });
         quitButton.position = {
-            x: quitButton.size.width / 2 + BUTTON_PADDING,
+            x: -quitButton.size.width / 2 - BUTTON_PADDING,
             y: -this.size.height / 2 + quitButton.size.height / 2 + this.VERTICAL_PADDING
         };
         this.add(quitButton);
@@ -402,11 +399,8 @@ LevelSelectScene, UnlockScene */
         var resetButton = new Arcadia.Button({
             color: null,
             border: '2px white',
-            label: new Arcadia.Label({
-                color: 'white',
-                text: 'reset',
-                font: '20px monospace'
-            }),
+            text: 'reset',
+            font: '24px monospace',
             size: {width: Grid.MAX_SIZE / 2 - BUTTON_PADDING, height: 40},
             action: function () {
                 sona.play('erase');
@@ -418,7 +412,7 @@ LevelSelectScene, UnlockScene */
             }
         });
         resetButton.position = {
-            x: -resetButton.size.width / 2 - BUTTON_PADDING,
+            x: resetButton.size.width / 2 + BUTTON_PADDING,
             y: -this.size.height / 2 + resetButton.size.height / 2 + this.VERTICAL_PADDING
         };
         this.add(resetButton);
@@ -499,6 +493,7 @@ LevelSelectScene, UnlockScene */
             border: '2px white',
             font: '36px monospace',
             text: 'next >',
+            padding: 10,
             action: function () {
                 sona.play('button');
 
@@ -520,6 +515,7 @@ LevelSelectScene, UnlockScene */
             border: '2px white',
             font: '36px monospace',
             text: '< back',
+            padding: 10,
             position: {x: 0, y: 75},
             action: function () {
                 sona.play('button');

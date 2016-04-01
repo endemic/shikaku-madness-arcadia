@@ -10,12 +10,12 @@
 
     Storage.prototype.setItem = function (key, value) {
         key = this.namespace(key);
-        return originalSetItem.apply(this, arguments);
+        return originalSetItem.call(this, key, value);
     };
 
     Storage.prototype.getItem = function (key) {
         key = this.namespace(key);
-        return originalGetItem.apply(this, arguments);
+        return originalGetItem.call(this, key);
     };
 
     Storage.prototype.namespace = function (key) {

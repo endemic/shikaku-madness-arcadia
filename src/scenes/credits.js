@@ -14,7 +14,7 @@
         var title = new Arcadia.Label({
             position: {x: 0, y: -167},
             font: '48px monospace',
-            text: 'Thanks\nFor\nPlaying!'
+            text: 'thanks\nfor\nplaying!'
         });
         this.add(title);
 
@@ -38,7 +38,7 @@
             border: '2px #fff',
             padding: buttonPadding,
             text: 'OK',
-            font: '20px monospace',
+            font: '36px monospace',
             action: function () {
                 // Clear out saved level data here! start over like a champ
                 // localStorage.setObject('completed', new Array(LEVELS.length));
