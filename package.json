@@ -4,7 +4,13 @@
   "description": "Japanese logic puzzles",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "concat": "cat src/objects/*.js src/data/*.js src/lib/*.js src/scenes/*.js > dist/shikaku-madness.js",
+    "compress": "./node_modules/.bin/uglifyjs dist/shikaku-madness.js --source-map dist/shikaku-madness.min.js.map --source-map-root http://ganbarugames.com/shikaku/javascript --output dist/shikaku-madness.min.js --mangle --compress",
+    "copy_to_cordova": "cp dist/shikaku-madness.min.js cordova/www/javascript; cp node_modules/arcadia/dist/arcadia.js cordova/www/javascript; cp node_modules/sona/dist/sona.js cordova/www/javascript; cp -r assets/** cordova/www/assets",
+    "copy_to_web": "cp dist/shikaku-madness.min.js ../../websites/ganbarugames.com/shikaku/javascript; cp node_modules/arcadia/dist/arcadia.js ../../websites/ganbarugames.com/shikaku/javascript; cp node_modules/sona/dist/sona.js ../../websites/ganbarugames.com/shikaku/javascript; cp -r assets/** ../../websites/ganbarugames.com/shikaku/assets; cp dist/index.html ../../websites/ganbarugames.com/shikaku; cp manifest.json ../../websites/ganbarugames.com/shikaku",
+    "cordova": "npm run-script concat && npm run-script compress && npm run-script copy_to_cordova",
+    "web": "npm run-script concat && npm run-script compress && npm run-script copy_to_web"
   },
   "repository": {
     "type": "git",
@@ -25,10 +31,7 @@
   "homepage": "https://github.com/endemic/shikaku-madness-arcadia",
   "devDependencies": {
     "arcadia": "file:../arcadia",
-    "gulp": "^3.9.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.2.0",
+    "uglify-js": "^2.6.2",
     "sona": "^1.0.3"
   }
 }

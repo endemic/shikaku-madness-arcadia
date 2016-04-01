@@ -1,5 +1,13 @@
 # TODO
 
+[x] Run source through JSLint
+[ ] Create favicon
+[ ] Add descriptive text to screenshots
+  * Save Acorn source file for 6S and iPad Pro
+[x] Swap positions of "more games" and "feedback" buttons
+[x] Ditch gulp!
+[ ] Upgrade to newest Cordova
+
 [x] Add "About" view, similar content to "Credits" but with "more games" and "data reset" buttons
 [x] Add "complete" window/effect w/ buttons
 	* Fade out grid
@@ -11,14 +19,16 @@
 [x] Tapping a level twice will de-select it (copy fix from Nonograms)
 [x] Make the last played level the one that is highlighted on the level select screen
 [x] Create 2 more tutorial levels
-[ ] Test IAP
-[ ] Test "more games" button
-[ ] Screenshots
-	[ ] iPhone 6S
-	[ ] iPad Pro
+[x] Swap "reset" and "quit" buttons
+[x] Make "reset" adn "quit" buttons text slightly larger
+[x] Capitalize first word of 1st tutorial
+[x] Remove status bar in Cordova app
+[x] Test IAP
+[x] Test "more games" button
+[x] Screenshots
+	[x] iPhone 6S
+	[x] iPad Pro
 [x] Add "unlock" button to Level Select
-[ ] Run source through JSLint
-[ ] Create favicon
 [x] Add "more games" button to About
 [x] Create basic level editor
 [x] Make more, smaller levels - 10 5x5, 10 6x6, 10 7x7, 10 8x8, 10 9x9, then include the rest of the 10x10, for 170 total
@@ -28,7 +38,6 @@
 [x] Show red border around locked levels when IAP available
 [x] Transition to IAP scene after finishing intro levels
 [x] Go directly from "start" into "game"
-
 [x] Copy appcache and webapp manifests to web target
 [x] Add a "rules" scene
 [x] Create sound effect for placing squares
