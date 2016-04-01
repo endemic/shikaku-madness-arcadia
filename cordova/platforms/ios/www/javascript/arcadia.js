@@ -1,6 +1,5 @@
-!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Arcadia=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-(function (global){
-(function() {
+!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.Arcadia=e():"undefined"!=typeof global?global.Arcadia=e():"undefined"!=typeof self&&(self.Arcadia=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};(function() {
   var Arcadia, nowOffset;
 
   if (window.requestAnimationFrame === void 0) {
@@ -25,22 +24,16 @@
   };
 
   Arcadia = {
-    Game: _dereq_('./game.coffee'),
-    Button: _dereq_('./button.coffee'),
-    Emitter: _dereq_('./emitter.coffee'),
-    GameObject: _dereq_('./gameobject.coffee'),
-    Label: _dereq_('./label.coffee'),
-    Pool: _dereq_('./pool.coffee'),
-    Scene: _dereq_('./scene.coffee'),
-    Shape: _dereq_('./shape.coffee'),
-    Sprite: _dereq_('./sprite.coffee')
+    Game: require('./game.coffee'),
+    Button: require('./button.coffee'),
+    Emitter: require('./emitter.coffee'),
+    GameObject: require('./gameobject.coffee'),
+    Label: require('./label.coffee'),
+    Pool: require('./pool.coffee'),
+    Scene: require('./scene.coffee'),
+    Shape: require('./shape.coffee'),
+    Sprite: require('./sprite.coffee')
   };
-
-  Arcadia.FPS = 60;
-
-  Arcadia.garbageCollected = false;
-
-  Arcadia.lastUsedHeap = 0;
 
   /*
   @description Get information about the current environment
@@ -73,13 +66,22 @@
     if (options == null) {
       options = {};
     }
-    Arcadia.instance.active.destroy();
-    return Arcadia.instance.active = new SceneClass(options);
+    return Arcadia.instance.activeScene = new SceneClass(options);
   };
+
+  /*
+  @description Distance method
+  */
+
 
   Arcadia.distance = function(one, two) {
     return Math.sqrt(Math.pow(two.x - one.x, 2) + Math.pow(two.y - one.y, 2));
   };
+
+  /*
+  @description Random number method
+  */
+
 
   Arcadia.random = function(min, max) {
     throw new Error("Implement a function that gets a random number between " + min + " and " + max + "!");
@@ -90,26 +92,24 @@
 }).call(this);
 
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./button.coffee":2,"./emitter.coffee":3,"./game.coffee":4,"./gameobject.coffee":5,"./label.coffee":6,"./pool.coffee":7,"./scene.coffee":8,"./shape.coffee":9,"./sprite.coffee":10}],2:[function(_dereq_,module,exports){
+},{"./button.coffee":2,"./emitter.coffee":3,"./game.coffee":4,"./gameobject.coffee":5,"./label.coffee":6,"./pool.coffee":7,"./scene.coffee":8,"./shape.coffee":9,"./sprite.coffee":10}],2:[function(require,module,exports){
 (function() {
   var Button, Shape,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Shape = _dereq_('./shape.coffee');
+  Shape = require('./shape.coffee');
 
   Button = (function(_super) {
     __extends(Button, _super);
 
     function Button(args) {
-      var Arcadia, Label, height;
+      var Label, height;
       if (args == null) {
         args = {};
       }
-      Arcadia = _dereq_('./arcadia.coffee');
-      Label = _dereq_('./label.coffee');
-      this.padding = args.padding || 10;
+      Label = require('./label.coffee');
+      this.padding = args.padding || 0;
       this.label = args.label || new Label({
         text: args.text,
         font: args.font
@@ -128,12 +128,7 @@
         this.action = args.action;
       }
       this.disabled = false;
-      this.onPointEnd = this.onPointEnd.bind(this);
-      if (Arcadia.ENV.mobile) {
-        Arcadia.element.addEventListener('touchend', this.onPointEnd, false);
-      } else {
-        Arcadia.element.addEventListener('mouseup', this.onPointEnd, false);
-      }
+      this.enablePointEvents = true;
     }
 
     /*
@@ -142,14 +137,15 @@
     */
 
 
-    Button.prototype.onPointEnd = function(event) {
+    Button.prototype.onPointEnd = function(points) {
       var i;
+      Button.__super__.onPointEnd.call(this, points);
       if (typeof this.action !== 'function' || this.disabled) {
         return;
       }
-      i = Arcadia.points.length;
+      i = points.length;
       while (i--) {
-        if (this.containsPoint(Arcadia.points[i])) {
+        if (this.containsPoint(points[i])) {
           return this.action();
         }
       }
@@ -162,19 +158,6 @@
 
     Button.prototype.containsPoint = function(point) {
       return point.x < this.position.x + this.size.width / 2 + this.padding / 2 && point.x > this.position.x - this.size.width / 2 - this.padding / 2 && point.y < this.position.y + this.size.height / 2 + this.padding / 2 && point.y > this.position.y - this.size.height / 2 - this.padding / 2;
-    };
-
-    /*
-    @description Clean up event listeners
-    */
-
-
-    Button.prototype.destroy = function() {
-      if (Arcadia.ENV.mobile) {
-        return Arcadia.element.removeEventListener('touchend', this.onPointEnd, false);
-      } else {
-        return Arcadia.element.removeEventListener('mouseup', this.onPointEnd, false);
-      }
     };
 
     /*
@@ -214,17 +197,17 @@
 }).call(this);
 
 
-},{"./arcadia.coffee":1,"./label.coffee":6,"./shape.coffee":9}],3:[function(_dereq_,module,exports){
+},{"./label.coffee":6,"./shape.coffee":9}],3:[function(require,module,exports){
 (function() {
   var Emitter, GameObject, Pool, Shape,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  GameObject = _dereq_('./gameobject.coffee');
+  GameObject = require('./gameobject.coffee');
 
-  Pool = _dereq_('./pool.coffee');
+  Pool = require('./pool.coffee');
 
-  Shape = _dereq_('./shape.coffee');
+  Shape = require('./shape.coffee');
 
   Emitter = (function(_super) {
     __extends(Emitter, _super);
@@ -322,7 +305,7 @@
 }).call(this);
 
 
-},{"./gameobject.coffee":5,"./pool.coffee":7,"./shape.coffee":9}],4:[function(_dereq_,module,exports){
+},{"./gameobject.coffee":5,"./pool.coffee":7,"./shape.coffee":9}],4:[function(require,module,exports){
 (function() {
   var Game,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -340,7 +323,7 @@
         args = {};
       }
       this.update = __bind(this.update, this);
-      Arcadia = _dereq_('./arcadia.coffee');
+      Arcadia = require('./arcadia.coffee');
       this.size = {
         width: parseInt(args.width, 10) || 320,
         height: parseInt(args.height, 10) || 480
@@ -352,15 +335,16 @@
         x: 0,
         y: 0
       };
+      Arcadia.FPS = 60;
+      if (args.hasOwnProperty('fps')) {
+        Arcadia.FPS_LIMIT = args.fps;
+      }
       if (args.hasOwnProperty('element')) {
         this.element = args.element;
       } else {
         this.element = document.createElement('div');
         this.element.id = 'arcadia';
         document.body.appendChild(this.element);
-      }
-      if (args.hasOwnProperty('fps')) {
-        Arcadia.FPS_LIMIT = args.fps;
       }
       this.canvas = document.createElement('canvas');
       this.context = this.canvas.getContext('2d');
@@ -415,7 +399,7 @@
         this.onResize();
         window.addEventListener('resize', this.onResize, false);
       }
-      this.active = new args.scene({
+      this.activeScene = new args.scene({
         size: {
           width: Arcadia.WIDTH,
           height: Arcadia.HEIGHT
@@ -430,8 +414,9 @@
 
 
     Game.prototype.pause = function() {
-      if (typeof this.active.pause === "function") {
-        return this.active.pause();
+      this.stop();
+      if (typeof this.activeScene.pause === "function") {
+        return this.activeScene.pause();
       }
     };
 
@@ -441,8 +426,9 @@
 
 
     Game.prototype.resume = function() {
-      if (typeof this.active.resume === "function") {
-        return this.active.resume();
+      this.start();
+      if (typeof this.activeScene.resume === "function") {
+        return this.activeScene.resume();
       }
     };
 
@@ -456,9 +442,7 @@
       if (event.type.indexOf('mouse') !== -1) {
         this.element.addEventListener('mousemove', this.onPointMove, false);
       }
-      if (typeof this.active.onPointStart === "function") {
-        return this.active.onPointStart(this.points);
-      }
+      return this.activeScene.onPointStart(this.points);
     };
 
     /*
@@ -468,9 +452,7 @@
 
     Game.prototype.onPointMove = function(event) {
       this.getPoints(event);
-      if (typeof this.active.onPointMove === "function") {
-        return this.active.onPointMove(this.points);
-      }
+      return this.activeScene.onPointMove(this.points);
     };
 
     /*
@@ -485,9 +467,7 @@
       if (event.type.indexOf('mouse') !== -1) {
         this.element.removeEventListener('mousemove', this.onPointMove, false);
       }
-      if (typeof this.active.onPointEnd === "function") {
-        return this.active.onPointEnd(this.points);
-      }
+      return this.activeScene.onPointEnd(this.points);
     };
 
     /*
@@ -503,8 +483,8 @@
         return;
       }
       this.input[key] = true;
-      if (typeof this.active.onKeyDown === "function") {
-        return this.active.onKeyDown(key);
+      if (typeof this.activeScene.onKeyDown === "function") {
+        return this.activeScene.onKeyDown(key);
       }
     };
 
@@ -518,8 +498,8 @@
       var key;
       key = this.getKey(event.keyCode);
       this.input[key] = false;
-      if (typeof this.active.onKeyUp === "function") {
-        return this.active.onKeyUp(key);
+      if (typeof this.activeScene.onKeyUp === "function") {
+        return this.activeScene.onKeyUp(key);
       }
     };
 
@@ -577,8 +557,8 @@
       }
       if (event.type.indexOf('mouse') !== -1) {
         return this.points.unshift({
-          x: (event.pageX - Arcadia.OFFSET.x) / Arcadia.SCALE - this.size.width / 2 + this.active.camera.position.x,
-          y: (event.pageY - Arcadia.OFFSET.y) / Arcadia.SCALE - this.size.height / 2 + this.active.camera.position.y
+          x: (event.pageX - Arcadia.OFFSET.x) / Arcadia.SCALE - this.size.width / 2 + this.activeScene.camera.position.x,
+          y: (event.pageY - Arcadia.OFFSET.y) / Arcadia.SCALE - this.size.height / 2 + this.activeScene.camera.position.y
         });
       } else {
         source = touchEnd ? 'changedTouches' : 'touches';
@@ -586,8 +566,8 @@
         _results = [];
         while (i--) {
           _results.push(this.points.unshift({
-            x: (event[source][i].pageX - Arcadia.OFFSET.x) / Arcadia.SCALE - this.size.width / 2 + this.active.camera.position.x,
-            y: (event[source][i].pageY - Arcadia.OFFSET.y) / Arcadia.SCALE - this.size.height / 2 + this.active.camera.position.y
+            x: (event[source][i].pageX - Arcadia.OFFSET.x) / Arcadia.SCALE - this.size.width / 2 + this.activeScene.camera.position.x,
+            y: (event[source][i].pageY - Arcadia.OFFSET.y) / Arcadia.SCALE - this.size.height / 2 + this.activeScene.camera.position.y
           }));
         }
         return _results;
@@ -601,9 +581,6 @@
 
     Game.prototype.start = function() {
       this.previousDelta = window.performance.now();
-      if (window.performance.memory != null) {
-        Arcadia.lastUsedHeap = window.performance.memory.usedJSHeapSize;
-      }
       return this.updateId = window.requestAnimationFrame(this.update);
     };
 
@@ -625,20 +602,13 @@
       var delta;
       delta = currentDelta - this.previousDelta;
       this.updateId = window.requestAnimationFrame(this.update);
-      if (window.performance.memory != null) {
-        if (window.performance.memory.usedJSHeapSize < Arcadia.lastUsedHeap) {
-          Arcadia.garbageCollected = true;
-        }
-        Arcadia.lastUsedHeap = window.performance.memory.usedJSHeapSize;
-      }
       Arcadia.FPS = Arcadia.FPS * 0.9 + 1000 / delta * 0.1;
-      if (Arcadia.FPS_LIMIT && delta < Math.round(960 / Arcadia.FPS_LIMIT)) {
+      if (Arcadia.FPS_LIMIT && delta < 1000 / Arcadia.FPS_LIMIT) {
         return;
       }
-      this.active.draw(this.context);
-      this.active.update(delta / 1000);
-      this.previousDelta = currentDelta;
-      return Arcadia.garbageCollected = false;
+      this.activeScene.draw(this.context);
+      this.activeScene.update(delta / 1000);
+      return this.previousDelta = currentDelta;
     };
 
     /*
@@ -715,11 +685,11 @@
 }).call(this);
 
 
-},{"./arcadia.coffee":1}],5:[function(_dereq_,module,exports){
+},{"./arcadia.coffee":1}],5:[function(require,module,exports){
 (function() {
   var GameObject, Pool;
 
-  Pool = _dereq_('./pool.coffee');
+  Pool = require('./pool.coffee');
 
   GameObject = (function() {
     function GameObject(args) {
@@ -729,6 +699,7 @@
       this.scale = args.scale || 1;
       this.rotation = args.rotation || 0;
       this.alpha = args.alpha || 1;
+      this.enablePointEvents = args.enablePointEvents || false;
       if (typeof args.position === 'object') {
         this.position = {
           x: args.position.x,
@@ -812,6 +783,60 @@
       return this.children.deactivate(objectOrIndex);
     };
 
+    /*
+    @description Event handler for "start" pointer event
+    @param {Array} points Array of touch/mouse coordinates
+    */
+
+
+    GameObject.prototype.onPointStart = function(points) {
+      if (!this.enablePointEvents) {
+        return;
+      }
+      return this.children.onPointStart(this.offsetPoints(points));
+    };
+
+    /*
+    @description Event handler for "move" pointer event
+    @param {Array} points Array of touch/mouse coordinates
+    */
+
+
+    GameObject.prototype.onPointMove = function(points) {
+      if (!this.enablePointEvents) {
+        return;
+      }
+      return this.children.onPointMove(this.offsetPoints(points));
+    };
+
+    /*
+    @description Event handler for "end" pointer event
+    @param {Array} points Array of touch/mouse coordinates
+    */
+
+
+    GameObject.prototype.onPointEnd = function(points) {
+      if (!this.enablePointEvents) {
+        return;
+      }
+      return this.children.onPointEnd(this.offsetPoints(points));
+    };
+
+    /*
+    @description Takes an array of x/y coordinates, and offsets them by own position
+    */
+
+
+    GameObject.prototype.offsetPoints = function(points) {
+      var _this = this;
+      return points.map(function(point) {
+        return {
+          x: point.x - _this.position.x,
+          y: point.y - _this.position.y
+        };
+      });
+    };
+
     return GameObject;
 
   })();
@@ -821,13 +846,13 @@
 }).call(this);
 
 
-},{"./pool.coffee":7}],6:[function(_dereq_,module,exports){
+},{"./pool.coffee":7}],6:[function(require,module,exports){
 (function() {
   var Label, Shape,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Shape = _dereq_('./shape.coffee');
+  Shape = require('./shape.coffee');
 
   Label = (function(_super) {
     __extends(Label, _super);
@@ -842,11 +867,7 @@
       };
       this._text = 'text goes here';
       this._alignment = 'center';
-      this.fixed = true;
       Label.__super__.constructor.call(this, args);
-      if (args.hasOwnProperty('fixed')) {
-        this.fixed = args.fixed;
-      }
       if (args.hasOwnProperty('font')) {
         this.font = args.font;
       }
@@ -873,7 +894,7 @@
       if (this.canvas === void 0) {
         return;
       }
-      Arcadia = _dereq_('./arcadia.coffee');
+      Arcadia = require('./arcadia.coffee');
       context = this.canvas.getContext('2d');
       lineCount = 1;
       newlines = this.text.match(/\n/g);
@@ -886,6 +907,7 @@
         element['id'] = 'text-dimensions';
         element.style['position'] = 'absolute';
         element.style['top'] = '-9999px';
+        element.style['overflow'] = 'scroll';
         document.body.appendChild(element);
       }
       element.style['font'] = this.font;
@@ -1004,7 +1026,7 @@
 }).call(this);
 
 
-},{"./arcadia.coffee":1,"./shape.coffee":9}],7:[function(_dereq_,module,exports){
+},{"./arcadia.coffee":1,"./shape.coffee":9}],7:[function(require,module,exports){
 /*
 @description One possible way to store common recyclable objects.
 Assumes the objects you add will have an `active` property, and optionally an
@@ -1018,32 +1040,37 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 
   Pool = (function() {
     function Pool() {
-      this.children = [];
-      this.length = 0;
-      this.tmp = null;
+      this.active = [];
+      this.inactive = [];
+      this.index = 0;
       this.factory = null;
     }
 
-    Pool.prototype.at = function(index) {
-      if (index >= this.length) {
-        return null;
+    Pool.property('length', {
+      get: function() {
+        return this.active.length;
       }
-      return this.children[index];
+    });
+
+    Pool.prototype.at = function(index) {
+      return this.active[index];
     };
 
     /*
-    @description Push an object into the recycle pool
+    @description Add an object into the recycle pool
+                 list is z-sorted from 0 -> n, higher z-indices are drawn first
     */
 
 
     Pool.prototype.add = function(object) {
-      this.children.unshift(object);
-      if (this.length < this.children.length) {
-        this.tmp = this.children[this.children.length - 1];
-        this.children[this.children.length - 1] = this.children[this.length];
-        this.children[this.length] = this.tmp;
+      if (!object.zIndex) {
+        object.zIndex = this.active.length + this.inactive.length;
       }
-      this.length += 1;
+      this.index = 0;
+      while (this.index < this.length && object.zIndex > this.active[this.index].zIndex) {
+        this.index += 1;
+      }
+      this.active.splice(this.index, 0, object);
       return this.length;
     };
 
@@ -1052,57 +1079,77 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
     */
 
 
-    Pool.prototype.remove = function(objectOrIndex) {
-      var index, object;
-      if (objectOrIndex === void 0) {
-        throw new Error('Must specify an object/index to remove');
+    Pool.prototype.remove = function(object) {
+      var index;
+      if (typeof object === 'number') {
+        index = object;
+        object = this.active.splice(index, 1)[0];
+        if (typeof object.destroy === 'function') {
+          object.destroy();
+        }
+        return object;
       }
-      index = typeof objectOrIndex !== 'number' ? this.children.indexOf(objectOrIndex) : objectOrIndex;
-      if (index === -1) {
-        return;
+      if (this.active.indexOf(object) !== -1) {
+        index = this.active.indexOf(object);
+        object = this.active.splice(index, 1)[0];
+        if (typeof object.destroy === 'function') {
+          object.destroy();
+        }
+        return object;
       }
-      object = this.children.splice(index, 1)[0];
-      if (typeof object.destroy === 'function') {
-        object.destroy();
+      if (this.inactive.indexOf(object) !== -1) {
+        index = this.inactive.indexOf(object);
+        object = this.inactive.splice(index, 1)[0];
+        if (typeof object.destroy === 'function') {
+          object.destroy();
+        }
+        return object;
       }
-      if (index < this.length) {
-        this.length -= 1;
-      }
-      return object;
+      return void 0;
     };
 
     /*
-    @description Get an active object by either reference or index
+    @description Get an active object by reference
     */
 
 
-    Pool.prototype.activate = function(objectOrIndex) {
+    Pool.prototype.activate = function(object) {
       var index;
-      if (objectOrIndex !== void 0) {
-        index = typeof objectOrIndex !== 'number' ? this.children.indexOf(objectOrIndex) : objectOrIndex;
-        if (!((this.children.length > index && index >= this.length))) {
-          return null;
+      if (object) {
+        index = this.inactive.indexOf(object);
+        if (index === -1) {
+          return void 0;
         }
-        this.tmp = this.children[this.length];
-        this.children[this.length] = this.children[index];
-        this.children[index] = this.tmp;
-        this.tmp = null;
-        this.length += 1;
-        return this.children[this.length - 1];
+        object = this.inactive.splice(index, 1)[0];
+        if (typeof object.reset === 'function') {
+          object.reset();
+        }
+        this.index = this.length;
+        while (this.index > 0 && this.active[this.index - 1].zIndex > object.zIndex) {
+          this.active[this.index] = this.active[this.index - 1];
+          this.index -= 1;
+        }
+        this.active[this.index] = object;
+        return object;
       }
-      if (objectOrIndex === void 0 && this.length < this.children.length) {
-        this.length += 1;
-        if (typeof this.children[this.length - 1].reset === 'function') {
-          this.children[this.length - 1].reset();
+      if (!object && this.inactive.length) {
+        object = this.inactive.shift();
+        if (typeof object.reset === 'function') {
+          object.reset();
         }
-        return this.children[this.length - 1];
+        this.index = this.length;
+        while (this.index > 0 && this.active[this.index - 1].zIndex > object.zIndex) {
+          this.active[this.index] = this.active[this.index - 1];
+          this.index -= 1;
+        }
+        this.active[this.index] = object;
+        return object;
       }
       if (typeof this.factory !== 'function') {
         throw new Error('Pools need a factory function');
       }
-      this.children.push(this.factory());
-      this.length += 1;
-      return this.children[this.length - 1];
+      this.add(this.factory());
+      return this.active[this.length - 1];
     };
 
     /*
@@ -1111,17 +1158,14 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 
 
     Pool.prototype.deactivate = function(objectOrIndex) {
-      var index;
-      index = typeof objectOrIndex !== 'number' ? this.children.indexOf(objectOrIndex) : objectOrIndex;
-      if (index >= this.length || index < 0) {
-        return null;
+      var index, object;
+      index = typeof objectOrIndex !== 'number' ? this.active.indexOf(objectOrIndex) : objectOrIndex;
+      if (index === -1) {
+        return;
       }
-      this.tmp = this.children[index];
-      this.children[index] = this.children[this.length - 1];
-      this.children[this.length - 1] = this.tmp;
-      this.tmp = null;
-      this.length -= 1;
-      return this.children[this.length];
+      object = this.active.splice(index, 1)[0];
+      this.inactive.push(object);
+      return object;
     };
 
     /*
@@ -1130,7 +1174,10 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 
 
     Pool.prototype.deactivateAll = function() {
-      return this.length = 0;
+      this.index = this.length;
+      while (this.index--) {
+        this.deactivate(this.index);
+      }
     };
 
     /*
@@ -1139,30 +1186,9 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 
 
     Pool.prototype.activateAll = function() {
-      this.length = this.children.length;
-      while (this.length--) {
-        this.tmp = this.children[this.length];
-        if (typeof this.tmp.reset === 'function') {
-          this.tmp.reset();
-        }
+      while (this.inactive.length) {
+        this.activate();
       }
-      return this.length = this.children.length;
-    };
-
-    /*
-    @description Destroy all child objects
-    */
-
-
-    Pool.prototype.destroyAll = function() {
-      this.length = this.children.length;
-      while (this.length--) {
-        this.tmp = this.children[this.length];
-        if (typeof this.tmp.destroy === 'function') {
-          this.tmp.destroy();
-        }
-      }
-      return this.length = 0;
     };
 
     /*
@@ -1171,9 +1197,9 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 
 
     Pool.prototype.update = function(delta) {
-      this.tmp = this.length;
-      while (this.tmp--) {
-        this.children[this.tmp].update(delta);
+      this.index = this.length;
+      while (this.index--) {
+        this.at(this.index).update(delta);
       }
     };
 
@@ -1183,9 +1209,48 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 
 
     Pool.prototype.draw = function() {
-      this.tmp = this.length;
-      while (this.tmp--) {
-        this.children[this.tmp].draw.apply(this.children[this.tmp], arguments);
+      this.index = this.length;
+      while (this.index--) {
+        this.at(this.index).draw.apply(this.at(this.index), arguments);
+      }
+    };
+
+    /*
+    @description Event handler for "start" pointer event
+    @param {Array} points Array of touch/mouse coordinates
+    */
+
+
+    Pool.prototype.onPointStart = function(points) {
+      this.index = this.length;
+      while (this.index--) {
+        this.at(this.index).onPointStart(points);
+      }
+    };
+
+    /*
+    @description Event handler for "move" pointer event
+    @param {Array} points Array of touch/mouse coordinates
+    */
+
+
+    Pool.prototype.onPointMove = function(points) {
+      this.index = this.length;
+      while (this.index--) {
+        this.at(this.index).onPointMove(points);
+      }
+    };
+
+    /*
+    @description Event handler for "end" pointer event
+    @param {Array} points Array of touch/mouse coordinates
+    */
+
+
+    Pool.prototype.onPointEnd = function(points) {
+      this.index = this.length;
+      while (this.index--) {
+        this.at(this.index).onPointEnd(points);
       }
     };
 
@@ -1198,28 +1263,29 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 }).call(this);
 
 
-},{}],8:[function(_dereq_,module,exports){
+},{}],8:[function(require,module,exports){
 (function() {
   var GameObject, Scene,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  GameObject = _dereq_('./gameobject.coffee');
+  GameObject = require('./gameobject.coffee');
 
   Scene = (function(_super) {
     __extends(Scene, _super);
 
-    function Scene(options) {
-      var defaultSize;
-      if (options == null) {
-        options = {};
+    function Scene(args) {
+      var DEFAULT_SIZE;
+      if (args == null) {
+        args = {};
       }
-      Scene.__super__.constructor.call(this, options);
-      defaultSize = {
+      Scene.__super__.constructor.call(this, args);
+      DEFAULT_SIZE = {
         width: Arcadia.WIDTH,
         height: Arcadia.HEIGHT
       };
-      this.size = options.size || defaultSize;
+      this.size = args.size || DEFAULT_SIZE;
+      this.enablePointEvents = true;
       this.camera = {
         target: null,
         viewport: {
@@ -1247,19 +1313,20 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 
     Scene.prototype.update = function(delta) {
       Scene.__super__.update.call(this, delta);
-      if (this.camera.target !== null) {
-        this.camera.position.x = this.camera.target.position.x;
-        this.camera.position.y = this.camera.target.position.y;
-        if (this.camera.position.x < this.camera.bounds.left + this.camera.viewport.width / 2) {
-          this.camera.position.x = this.camera.bounds.left + this.camera.viewport.width / 2;
-        } else if (this.camera.position.x > this.camera.bounds.right - this.camera.viewport.width / 2) {
-          this.camera.position.x = this.camera.bounds.right - this.camera.viewport.width / 2;
-        }
-        if (this.camera.position.y < this.camera.bounds.top + this.camera.viewport.height / 2) {
-          return this.camera.position.y = this.camera.bounds.top + this.camera.viewport.height / 2;
-        } else if (this.camera.position.y > this.camera.bounds.bottom - this.camera.viewport.height / 2) {
-          return this.camera.position.y = this.camera.bounds.bottom - this.camera.viewport.height / 2;
-        }
+      if (!this.camera.target) {
+        return;
+      }
+      this.camera.position.x = this.camera.target.position.x;
+      this.camera.position.y = this.camera.target.position.y;
+      if (this.camera.position.x < this.camera.bounds.left + this.camera.viewport.width / 2) {
+        this.camera.position.x = this.camera.bounds.left + this.camera.viewport.width / 2;
+      } else if (this.camera.position.x > this.camera.bounds.right - this.camera.viewport.width / 2) {
+        this.camera.position.x = this.camera.bounds.right - this.camera.viewport.width / 2;
+      }
+      if (this.camera.position.y < this.camera.bounds.top + this.camera.viewport.height / 2) {
+        return this.camera.position.y = this.camera.bounds.top + this.camera.viewport.height / 2;
+      } else if (this.camera.position.y > this.camera.bounds.bottom - this.camera.viewport.height / 2) {
+        return this.camera.position.y = this.camera.bounds.bottom - this.camera.viewport.height / 2;
       }
     };
 
@@ -1280,24 +1347,6 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
     };
 
     /*
-    @description Move scene's <canvas> into place
-    */
-
-
-    Scene.prototype.transition = function() {
-      return console.log('Scene#transition');
-    };
-
-    /*
-    Handle removing event listeners, etc.?
-    */
-
-
-    Scene.prototype.destroy = function() {
-      return this.children.destroyAll();
-    };
-
-    /*
     @description Getter/setter for camera target
     */
 
@@ -1307,12 +1356,10 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
         return this.camera.target;
       },
       set: function(shape) {
-        if (!(shape != null ? shape.position : void 0)) {
-          return;
+        if (!shape || !shape.position) {
+          throw new Error('Scene camera target requires a `position` property.');
         }
-        this.camera.target = shape;
-        this.camera.position.x = shape.position.x;
-        return this.camera.position.y = shape.position.y;
+        return this.camera.target = shape;
       }
     });
 
@@ -1325,15 +1372,15 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 }).call(this);
 
 
-},{"./gameobject.coffee":5}],9:[function(_dereq_,module,exports){
+},{"./gameobject.coffee":5}],9:[function(require,module,exports){
 (function() {
   var Easie, GameObject, Shape,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  GameObject = _dereq_('./gameobject.coffee');
+  GameObject = require('./gameobject.coffee');
 
-  Easie = _dereq_('../vendor/easie.coffee');
+  Easie = require('../vendor/easie.coffee');
 
   Shape = (function(_super) {
     __extends(Shape, _super);
@@ -1739,13 +1786,13 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 }).call(this);
 
 
-},{"../vendor/easie.coffee":11,"./gameobject.coffee":5}],10:[function(_dereq_,module,exports){
+},{"../vendor/easie.coffee":11,"./gameobject.coffee":5}],10:[function(require,module,exports){
 (function() {
   var GameObject, Sprite,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  GameObject = _dereq_('./gameobject.coffee');
+  GameObject = require('./gameobject.coffee');
 
   Sprite = (function(_super) {
     __extends(Sprite, _super);
@@ -1783,9 +1830,6 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
       }
       if (offsetY == null) {
         offsetY = 0;
-      }
-      if (this.fixed) {
-        offsetX = offsetY = 0;
       }
       Sprite.__super__.draw.call(this, context, this.position.x + offsetX, this.position.y + offsetY);
       context.save();
@@ -1835,7 +1879,7 @@ Linux Games (http://en.wikipedia.org/wiki/Programming_Linux_Games)
 }).call(this);
 
 
-},{"./gameobject.coffee":5}],11:[function(_dereq_,module,exports){
+},{"./gameobject.coffee":5}],11:[function(require,module,exports){
 /*
 Easie.coffee (https://github.com/jimjeffers/Easie)
 Project created by J. Jeffers
@@ -2130,3 +2174,4 @@ Don't do bad things with this :)
 },{}]},{},[1])
 (1)
 });
+;

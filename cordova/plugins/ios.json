@@ -7,16 +7,16 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
+        "cc.fovea.cordova.purchase": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
         },
-        "cc.fovea.cordova.purchase": {
+        "cordova-plugin-console": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
         },
-        "cordova-plugin-console": {
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
         }
     },
