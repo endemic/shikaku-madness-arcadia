@@ -499,11 +499,15 @@ LevelSelectScene, UnlockScene */
 
                 var completedLevels = localStorage.getObject('completedLevels') || [];
                 var incompleteLevel = completedLevels.indexOf(null);
+                var nagShown = localStorage.getBoolean('nagShown');
+                var NAG_FOR_REVIEW_THRESHOLD = 0.4;
 
                 if (incompleteLevel === -1) {
                     Arcadia.changeScene(LevelSelectScene);
                 } else if (Arcadia.isLocked() && incompleteLevel >= Arcadia.FREE_LEVEL_COUNT) {
                     Arcadia.changeScene(UnlockScene);
+                } else if (Arcadia.ENV.cordova && percentComplete > NAG_FOR_REVIEW_THRESHOLD && !nagShown) {
+                    Arcadia.changeScene(ReviewNagScene, {level: incompleteLevel});
                 } else {
                     Arcadia.changeScene(GameScene, {level: incompleteLevel});
                 }

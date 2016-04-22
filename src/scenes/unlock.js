@@ -18,10 +18,18 @@
 
         var BUTTON_PADDING = 15;
 
+        var text = [
+            'I hope you\'ve enjoyed',
+            'solving puzzles so far.',
+            'Would you like to',
+            'unlock 115 more puzzles',
+            'for only ' + window.PRODUCT_DATA.price + '?'
+        ];
+
         var description = new Arcadia.Label({
             position: {x: 0, y: -100},
             font: '20px monospace',
-            text: 'I hope you\'ve enjoyed\nsolving puzzles so far.\nWould you like to\nunlock 115 more puzzles\nfor only ' + window.PRODUCT_DATA.price + '?'
+            text: text.join('\n')
         });
         this.add(description);
 

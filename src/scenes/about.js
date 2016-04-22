@@ -39,37 +39,14 @@
             'https://ganbarugames.com'
         ];
 
-        var detailLabel = new Arcadia.Label({
+        var creditsLabel = new Arcadia.Label({
             text: creditsText.join('\n'),
             font: '20px monospace',
             position: {x: 0, y: -75}
         });
-        this.add(detailLabel);
-
-        /* Lawl not actually checking that localstorage bool */
-        // var sfxToggleButton = new Arcadia.Button({
-        //     position: { x: 0, y: 50 },
-            // size: {width: 180, height: 50},
-            // color: null,
-            // border: '2px white',
-            // text: (localStorage.getBoolean('playSfx') ? 'Sound on' : 'Sound off'),
-            // font: '36px monospace',
-        //     action: function () {
-        //         sona.play('button');
-
-        //         if (localStorage.getBoolean('playSfx')) {
-        //             localStorage.setBoolean('playSfx', false);
-        //             this.text = 'Sound off';
-        //         } else {
-        //             localStorage.setBoolean('playSfx', true);
-        //             this.text = 'Sound on';
-        //         }
-        //     }
-        // });
-        // this.add(sfxToggleButton);
+        this.add(creditsLabel);
 
         var dataResetButton = new Arcadia.Button({
-            // position: { x: 0, y: sfxToggleButton.position.y + 60 },
             position: {x: 0, y: 60},
             size: {width: 240, height: 50},
             color: null,
