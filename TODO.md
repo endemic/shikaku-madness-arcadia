@@ -2,15 +2,10 @@
 
 [x] Create favicon
 [x] Add descriptive text to screenshots
-  * Save Acorn source file for 6S and iPad Pro
 [x] Swap positions of "more games" and "feedback" buttons
 [x] Ditch gulp!
 [x] Add "Review this app" nag view -- after completing half the puzzles
-[ ] Upgrade to newest Cordova with fast webview
-[ ] Publish update
-
------------------
-
+[x] Upgrade to newest Cordova with fast webview
 [x] Run source through JSLint
 [x] Add "About" view, similar content to "Credits" but with "more games" and "data reset" buttons
 [x] Add "complete" window/effect w/ buttons
