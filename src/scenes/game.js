@@ -499,6 +499,9 @@ LevelSelectScene, UnlockScene */
 
                 var completedLevels = localStorage.getObject('completedLevels') || [];
                 var incompleteLevel = completedLevels.indexOf(null);
+                var percentComplete = completedLevels.filter(function (entry) {
+                    return entry === true;
+                }).length / completedLevels.length;
                 var nagShown = localStorage.getBoolean('nagShown');
                 var NAG_FOR_REVIEW_THRESHOLD = 0.4;
 
