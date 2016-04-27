@@ -17,27 +17,22 @@
  under the License.
  */
 
-#import <Foundation/Foundation.h>
-#import <Cordova/CDVPlugin.h>
+#import "CDVLogger.h"
+#import <Cordova/CDV.h>
 
-typedef struct {
-    BOOL iPhone;
-    BOOL iPad;
-    BOOL iPhone5;
-    BOOL iPhone6;
-    BOOL iPhone6Plus;
-    BOOL retina;
-    
-} CDV_iOSDevice;
+@implementation CDVLogger
 
-@interface CDVSplashScreen : CDVPlugin {
-    UIActivityIndicatorView* _activityView;
-    UIImageView* _imageView;
-    NSString* _curImageName;
-    BOOL _visible;
+/* log a message */
+- (void)logLevel:(CDVInvokedUrlCommand*)command
+{
+    id level = [command argumentAtIndex:0];
+    id message = [command argumentAtIndex:1];
+
+    if ([level isEqualToString:@"LOG"]) {
+        NSLog(@"%@", message);
+    } else {
+        NSLog(@"%@: %@", level, message);
+    }
 }
-
-- (void)show:(CDVInvokedUrlCommand*)command;
-- (void)hide:(CDVInvokedUrlCommand*)command;
 
 @end

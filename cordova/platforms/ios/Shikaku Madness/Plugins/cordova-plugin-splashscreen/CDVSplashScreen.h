@@ -17,12 +17,27 @@
  under the License.
  */
 
-#import <Cordova/CDVViewController.h>
+#import <Foundation/Foundation.h>
+#import <Cordova/CDVPlugin.h>
 
-@interface CDVViewController (SplashScreen)
+typedef struct {
+    BOOL iPhone;
+    BOOL iPad;
+    BOOL iPhone5;
+    BOOL iPhone6;
+    BOOL iPhone6Plus;
+    BOOL retina;
+    
+} CDV_iOSDevice;
 
-@property (nonatomic, assign) BOOL enabledAutorotation;
-@property (nonatomic, readonly) BOOL shouldAutorotateDefaultValue;
+@interface CDVSplashScreen : CDVPlugin {
+    UIActivityIndicatorView* _activityView;
+    UIImageView* _imageView;
+    NSString* _curImageName;
+    BOOL _visible;
+}
 
+- (void)show:(CDVInvokedUrlCommand*)command;
+- (void)hide:(CDVInvokedUrlCommand*)command;
 
 @end

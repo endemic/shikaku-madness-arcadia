@@ -60,7 +60,9 @@
             UnlockScene.initializeStore();
 
             if (navigator.splashscreen) {
-              navigator.splashscreen.hide();
+              window.setTimeout(function () {
+                navigator.splashscreen.hide();
+              }, 0);
             }
         });
   		}

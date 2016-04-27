@@ -9,15 +9,15 @@
                 "parents": {
                     "/*": [
                         {
+                            "xml": "<feature name=\"SplashScreen\"><param name=\"ios-package\" value=\"CDVSplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"InAppPurchase\"><param name=\"ios-package\" value=\"InAppPurchase\" /></feature>",
                             "count": 1
                         },
                         {
                             "xml": "<feature name=\"Console\"><param name=\"ios-package\" value=\"CDVLogger\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"SplashScreen\"><param name=\"ios-package\" value=\"CDVSplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -26,21 +26,29 @@
         }
     },
     "installed_plugins": {
-        "cc.fovea.cordova.purchase": {
-            "PACKAGE_NAME": "com.ganbarugames.shikaku"
-        },
-        "cordova-plugin-console": {
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
         },
-        "cordova-plugin-whitelist": {
+        "cc.fovea.cordova.purchase": {
+            "PACKAGE_NAME": "com.ganbarugames.shikaku"
+        },
+        "cordova-plugin-console": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
         }
     },
     "dependent_plugins": {},
     "modules": [
+        {
+            "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+            "id": "cordova-plugin-splashscreen.SplashScreen",
+            "pluginId": "cordova-plugin-splashscreen",
+            "clobbers": [
+                "navigator.splashscreen"
+            ]
+        },
         {
             "file": "plugins/cc.fovea.cordova.purchase/www/store-ios.js",
             "id": "cc.fovea.cordova.purchase.InAppPurchase",
@@ -64,20 +72,12 @@
             "clobbers": [
                 "cordova.logger"
             ]
-        },
-        {
-            "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
-            "id": "cordova-plugin-splashscreen.SplashScreen",
-            "pluginId": "cordova-plugin-splashscreen",
-            "clobbers": [
-                "navigator.splashscreen"
-            ]
         }
     ],
     "plugin_metadata": {
+        "cordova-plugin-whitelist": "1.2.2",
+        "cordova-plugin-splashscreen": "2.0.0",
         "cc.fovea.cordova.purchase": "4.0.0",
-        "cordova-plugin-console": "1.0.3",
-        "cordova-plugin-splashscreen": "3.2.2",
-        "cordova-plugin-whitelist": "1.2.2"
+        "cordova-plugin-console": "1.0.3"
     }
 }
