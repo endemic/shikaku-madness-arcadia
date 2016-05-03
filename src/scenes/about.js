@@ -77,7 +77,11 @@
                 font: '36px monospace',
                 action: function () {
                     window.sona.play('button');
-                    window.open('itms-apps://itunes.apple.com/app/id1067169429');
+                    if (Arcadia.ENV.ios) {
+                        window.open('itms-apps://itunes.apple.com/app/id1067169429');
+                    } else if (Arcadia.ENV.android && cordova.InAppBrowser) {
+                        cordova.InAppBrowser.open('market://details?id=com.ganbarugames.shikaku', '_system');
+                    }
                 }
             });
             this.add(rateButton);
@@ -91,7 +95,11 @@
                 font: '36px monospace',
                 action: function () {
                     window.sona.play('button');
-                    window.open('itms-apps://itunes.com/apps/ganbarugames');
+                    if (Arcadia.ENV.ios) {
+                        window.open('itms-apps://itunes.com/apps/ganbarugames');
+                    } else if (Arcadia.ENV.android && cordova.InAppBrowser) {
+                        cordova.InAppBrowser.open('market://search?q=pub:Ganbaru+Games', '_system');
+                    }
                 }
             });
             this.add(moreGamesButton);

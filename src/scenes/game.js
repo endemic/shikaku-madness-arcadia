@@ -47,11 +47,19 @@ LevelSelectScene, UnlockScene */
             this.displayTutorial();
         }
 
-        // DEBUG
-        // var self = this;
-        // window.setTimeout(function () {
-        //     self.win();
-        // }, 1000);
+        var self = this;
+
+        // Load AdMob content
+        if (AdMob) {
+            AdMob.prepareInterstitial({
+                adId: 'ca-app-pub-8045350589241869/8227703038',
+                autoShow: false
+            }, function success() {
+                self.adLoaded = true;
+            }, function failure() {
+                self.adLoaded = false;
+            });
+        }
     };
 
     GameScene.prototype = new Arcadia.Scene();
@@ -512,7 +520,18 @@ LevelSelectScene, UnlockScene */
                 } else if (Arcadia.ENV.cordova && percentComplete > NAG_FOR_REVIEW_THRESHOLD && !nagShown) {
                     Arcadia.changeScene(ReviewNagScene, {level: incompleteLevel});
                 } else {
-                    Arcadia.changeScene(GameScene, {level: incompleteLevel});
+                    window.onAdDismiss = function () {
+                        Arcadia.changeScene(GameScene, {level: incompleteLevel});
+                    };
+
+                    if (self.adLoaded) {
+                        // Re-attach dismissal event listener
+                        document.removeEventListener('onAdDismiss', window.onAdDismiss);
+                        document.addEventListener('onAdDismiss', window.onAdDismiss);
+                        AdMob.showInterstitial();
+                    } else {
+                        window.onAdDismiss();
+                    }
                 }
             }
         }));

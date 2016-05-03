@@ -9,7 +9,17 @@
     "installed_plugins": {
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ganbarugames.shikaku"
+        },
+        "cordova-plugin-admobpro": {
+            "PACKAGE_NAME": "com.ganbarugames.shikaku"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.ganbarugames.shikaku"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-extension": {
+            "PACKAGE_NAME": "com.ganbarugames.shikaku"
+        }
+    }
 }
