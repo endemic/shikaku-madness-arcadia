@@ -51,6 +51,12 @@ LevelSelectScene, UnlockScene */
 
         // Load AdMob content
         if (AdMob) {
+            window.onAdFailLoad = function () {
+                self.adLoaded = false;
+            };
+            document.removeEventListener('onAdFailLoad', window.onAdFailLoad);
+            document.addEventListener('onAdFailLoad', window.onAdFailLoad);
+
             AdMob.prepareInterstitial({
                 adId: 'ca-app-pub-8045350589241869/8227703038',
                 autoShow: false
@@ -524,7 +530,7 @@ LevelSelectScene, UnlockScene */
                         Arcadia.changeScene(GameScene, {level: incompleteLevel});
                     };
 
-                    if (self.adLoaded) {
+                    if (AdMob && self.adLoaded) {
                         // Re-attach dismissal event listener
                         document.removeEventListener('onAdDismiss', window.onAdDismiss);
                         document.addEventListener('onAdDismiss', window.onAdDismiss);
